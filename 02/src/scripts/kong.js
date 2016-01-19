@@ -3,7 +3,7 @@ function Kong(scene, camera, renderer) {
   var loader = new THREE.OBJLoader()
   this.mesh = new THREE.Object3D;
 
-  loader.load('assets/test_gorila.obj',function(object){
+  loader.load('./assets/test_gorila.OBJ',function(object){
     object.rotation.y = 170 * Math.PI / 180;
     object.traverse( function ( child ) {
         if ( child instanceof THREE.Mesh ) {
