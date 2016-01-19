@@ -20,6 +20,7 @@
     "watchify": "^3.4.0"
   },
   "dependencies": {
+    "gsap": "^1.18.2",
     "jquery": "^2.1.4",
     "three": "^0.73.2",
     "three-orbit-controls": "^72.0.0"

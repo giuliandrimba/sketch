@@ -1,12 +1,14 @@
 window.THREE = require("three")
+require("gsap");
 require("./three/OBJLoader")
+window.MOD3 = require("./three/mod3.bundle").MOD3
 var OrbitControls = require('three-orbit-controls')(THREE)
 var Kong = require("./kong")
 
 var scene = new THREE.Scene()
 var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
 var renderer = new THREE.WebGLRenderer({alpha: true})
-var controls = new OrbitControls(camera);
+// var controls = new OrbitControls(camera);
 var kingKong = new Kong(scene, camera, renderer);
 
 camera.position.set(0, 0, -20)
@@ -20,7 +22,7 @@ function resize() {
 
 function render() {
   requestAnimationFrame( render );
-
+  kingKong.update()
   camera.lookAt( scene.position )
   renderer.render(scene, camera);
 }
