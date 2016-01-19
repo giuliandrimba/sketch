@@ -27,7 +27,8 @@ function Kong(scene, camera, renderer) {
       } );
     self.mesh = new THREE.Mesh(geometry, material);
     scene.add(self.mesh)
-    self.mesh.rotation.y = 170 * Math.PI / 180;
+    self.mesh.rotation.y = 130 * Math.PI / 180;
+    self.mesh.rotation.x = -30 * Math.PI / 180;
     self.onLoad()
   });
 

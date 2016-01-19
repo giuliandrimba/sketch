@@ -44908,6 +44908,9 @@ var kingKong = new Kong(scene, camera, renderer);
 
 camera.position.set(0, 0, -20)
 
+scene.fog = new THREE.Fog(0xffffff, 10, 18);
+// scene.fog.color.setHSL( 0.51, 0.6, 0.6 );
+
 function resize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
@@ -44963,7 +44966,8 @@ function Kong(scene, camera, renderer) {
       } );
     self.mesh = new THREE.Mesh(geometry, material);
     scene.add(self.mesh)
-    self.mesh.rotation.y = 170 * Math.PI / 180;
+    self.mesh.rotation.y = 130 * Math.PI / 180;
+    self.mesh.rotation.x = -30 * Math.PI / 180;
     self.onLoad()
   });
 

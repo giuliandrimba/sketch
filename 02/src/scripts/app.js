@@ -13,6 +13,9 @@ var kingKong = new Kong(scene, camera, renderer);
 
 camera.position.set(0, 0, -20)
 
+scene.fog = new THREE.Fog(0xffffff, 10, 18);
+// scene.fog.color.setHSL( 0.51, 0.6, 0.6 );
+
 function resize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
