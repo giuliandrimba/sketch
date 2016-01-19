@@ -5,12 +5,10 @@ function Kong(scene, camera, renderer) {
 
   loader.load('assets/test_gorila.obj',function(object){
     object.rotation.y = 170 * Math.PI / 180;
-
     object.traverse( function ( child ) {
         if ( child instanceof THREE.Mesh ) {
-
           child.material.wireframe = true
-
+          console.log(child.geometry)
         }
 
       } );
