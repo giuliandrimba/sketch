@@ -49,4 +49,6 @@ table {
 
 body {
   overflow: hidden;
+  background: rgba(255,255,255,1);
+  background: radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(238,238,238,1) 50%, rgba(238,238,238,1) 100%);
 }
