@@ -44903,13 +44903,27 @@ var Kong = require("./kong")
 var scene = new THREE.Scene()
 var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
 var renderer = new THREE.WebGLRenderer({alpha: true})
-// var controls = new OrbitControls(camera);
+var controls = new OrbitControls(camera);
 var kingKong = new Kong(scene, camera, renderer);
 
-camera.position.set(0, 0, -20)
+camera.position.set(0, 0, 4)
 
-scene.fog = new THREE.Fog(0xffffff, 10, 18);
+scene.fog = new THREE.Fog(0xffffff, 15, 30);
 // scene.fog.color.setHSL( 0.51, 0.6, 0.6 );
+
+
+var lights = [];
+lights[0] = new THREE.PointLight( 0xffffff, 1, 0 );
+lights[1] = new THREE.PointLight( 0xffffff, 1, 0 );
+lights[2] = new THREE.PointLight( 0xffffff, 1, 0 );
+
+// lights[0].position.set( 0, 200, 0 );
+lights[1].position.set( 100, 200, 100 );
+lights[2].position.set( -100, -200, -100 );
+
+scene.add( lights[0] );
+      scene.add( lights[1] );
+      scene.add( lights[2] );
 
 function resize() {
   camera.aspect = window.innerWidth / window.innerHeight;
@@ -44946,33 +44960,20 @@ function Kong(scene, camera, renderer) {
   var angle = {x:0, force:0}
   var loaded = false;
   var dragging = false;
+  var clock = new THREE.Clock();
 
-  var material = new THREE.MeshBasicMaterial({wireframe:true, color:0x333333})
+  var material = undefined;
   var geometry = undefined;
 
-  var mouseX = 0, mouseY = 0;
+  var mouseX = 0;
+  var mouseY = 0;
   var initMouseX = 0;
 
   var windowHalfX = window.innerWidth / 2;
   var windowHalfY = window.innerHeight / 2;
-
-  loader.load('./assets/test_gorila.OBJ',function(object){
-    object.traverse( function ( child ) {
-        if ( child instanceof THREE.Mesh ) {
-          geometry = new THREE.Geometry().fromBufferGeometry( child.geometry );
-          child.material.wireframe = true
-        }
-
-      } );
-    self.mesh = new THREE.Mesh(geometry, material);
-    scene.add(self.mesh)
-    self.mesh.rotation.y = 130 * Math.PI / 180;
-    self.mesh.rotation.x = -30 * Math.PI / 180;
-    self.onLoad()
-  });
+  var initAngleX = 0
 
   this.onLoad = function() {
-    loaded = true;
     mod3 = new MOD3.ModifierStack( MOD3.LibraryThree, self.mesh )
     twist = new MOD3.Twist( 0 );
     twist.angle=0;
@@ -44985,6 +44986,7 @@ function Kong(scene, camera, renderer) {
     mod3.apply()
 
     events();
+    loaded = true;
   }
 
   function events() {
@@ -44994,8 +44996,10 @@ function Kong(scene, camera, renderer) {
 
   function onMouseDown() {
     dragging = true;
+    TweenMax.killTweensOf(angle);
     document.addEventListener("mousemove", onMouseMove)
     initMouseX = ( event.clientX - windowHalfX ) / 2;;
+    initAngleX = angle.x
   }
 
   function onMouseUp() {
@@ -45016,14 +45020,37 @@ function Kong(scene, camera, renderer) {
     if(!loaded)
       return
 
+    var delta = 5 * clock.getDelta();
+
     if(dragging) {
-      angle.x += (initMouseX - mouseX) * 0.01
+      angle.x = (initAngleX + (initMouseX - mouseX) * 0.5) * -1
     }
 
     // noise.force = angle.force;
     twist.angle = angle.x * Math.PI / 180
     mod3.apply()
+
+    self.mesh.rotation.y += 0.0125 * delta;
   }
+
+  function init() {
+
+    loader.load('./assets/macaco_low.OBJ',function(object) {
+      object.traverse( function ( child ) {
+        if ( child instanceof THREE.Mesh ) {
+          geometry = new THREE.Geometry().fromBufferGeometry( child.geometry );
+        }
+
+      } );
+
+      var basic = new THREE.THREE.MeshPhongMaterial({color:0xff5400, wireframe:false, shading: THREE.FlatShading, emissive:0x000000, specular:0x111111})
+      self.mesh = new THREE.Mesh(geometry, basic);
+      scene.add(self.mesh)
+      self.onLoad()
+    });
+  }
+
+  init()
 
 }
 
