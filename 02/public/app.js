@@ -45035,7 +45035,15 @@ function Kong(scene, camera, renderer) {
 
   function init() {
 
-    loader.load('./assets/macaco_low.OBJ',function(object) {
+    path = './assets/macaco_low.OBJ'
+
+    if(/medium/.test(window.location.href))
+      path = './assets/macaco_medium.OBJ'
+
+    if(/high/.test(window.location.href))
+      path = './assets/macaco-high.OBJ'
+
+    loader.load(path,function(object) {
       object.traverse( function ( child ) {
         if ( child instanceof THREE.Mesh ) {
           geometry = new THREE.Geometry().fromBufferGeometry( child.geometry );
