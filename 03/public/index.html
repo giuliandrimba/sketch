@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Draft</title>
+	<link rel="stylesheet" type="text/css" href="app.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5.1/dat.gui.min.js"></script>
+</head>
+<body>
+<script id="fragmentShader" type="x-shader/x-fragment">
+
+      uniform float time;
+      uniform vec2 resolution;
+      uniform float fogDensity;
+      uniform vec3 fogColor;
+      uniform sampler2D texture1;
+      uniform sampler2D texture2;
+      varying vec2 vUv;
+      void main( void ) {
+
+        gl_FragColor = vec4(vUv.y, 0.0, 0.0, 1.0);
+      }
+
+    </script>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+
+      uniform vec2 uvScale;
+      varying vec2 vUv;
+      void main()
+      {
+        vUv = vec2(position.x, position.z);
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+        gl_Position = projectionMatrix * mvPosition;
+      }
+
+    </script>
+
+<script src="app.js"></script>
+</body>
+</html>
