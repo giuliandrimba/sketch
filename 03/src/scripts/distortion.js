@@ -21,14 +21,31 @@ module.exports = function(mesh) {
   mod3 = new MOD3.ModifierStack( MOD3.LibraryThree, mesh );
   gui = new dat.GUI();
 
+  options.tween = tween;
+
   applyBend()
   applyBloat()
   applyBreak()
-  // applyNoise()
+  applyNoise()
   applySkew()
   applyTaper()
   applyTwist()
   applyDistort()
+
+  return {
+    update:update,
+    distort: distort,
+    twist:twist
+  }
+}
+
+function update() {
+  mod3.apply()
+}
+
+
+function tween() {
+
 }
 
 function applyBend() {
@@ -108,22 +125,18 @@ function applyBreak() {
 
 function applyNoise() {
   options.noise = {}
-  options.noise.force = 0;
+  options.noise.force = 1;
 
   noise = new MOD3.Noise( 20 );
-  // mod3.constraintAxes(MOD3.ModConstant.X | MOD3.ModConstant.Y);
   mod3.addModifier( noise );
   mod3.apply();
 
-  console.log("add noise")
-
   var f3 = gui.addFolder('Noise');
-  f3.add(options.noise, 'force', 0, 200).onChange(updateNoise)
+  f3.add(options.noise, 'force', -20, 20).onChange(updateNoise)
 
   // f3.open()
 
   function updateNoise() {
-    console.log(options.noise.force)
     noise.force = options.noise.force;
     mod3.apply()
   }
@@ -208,7 +221,8 @@ function applyDistort() {
   f3.open()
 
   function updatedistort() {
-    distort.angle = options.distort.angle * Math.PI / 180;
+    distort.angle = angle;
+    distort.tween()
     mod3.apply()
   }
 }

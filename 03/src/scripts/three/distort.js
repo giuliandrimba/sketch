@@ -27,6 +27,7 @@
             this.center = Vector3.ZERO( );
             this.mat1 = new Matrix4( );
             this.mat2 = new Matrix4( );
+            this.scaleAngle = 1;
         },
 
         vector: null,
@@ -65,6 +66,10 @@
 
         },
 
+        tween: function() {
+          console.log("tween")
+        },
+
         unserialize: function( json ) {
             if ( json && this.name === json.modifier )
             {
@@ -79,6 +84,11 @@
             return this;
         },
 
+        explode: function() {
+          this.canExplode = true
+          this.scaleAngle = 1;
+        },
+
         _apply: function( ) {
             var mod = this.mod, vs = mod.vertices, vc = vs.length,
                 vector = this.vector, angle = this.angle, center = this.center,
@@ -89,12 +99,25 @@
                 v, dd, vec
             ;
 
+            var total = vc;
+
             // optimize loop using while counting down instead of up
             while ( --vc >= 0 )
             {
                 v = vs[ vc ];
+                if(!v.scale)
+                  v.scale = 1 + ((total / vc) * 0.1)
+
+                if(!v.scaleMult || !this.canExplode)
+                  v.scaleMult = 1;
+
+                if(this.canExplode) {
+                  v.scaleMult += angle * 0.05;
+                }
+
                 vec = v.getVector( );
-                dd = Vector3.dot( vec, vector ) + d;
+                vec = vec.multiply(new Vector3(v.scaleMult, v.scaleMult + (Math.random() * 0.1), v.scaleMult + (Math.random() * 0.1)))
+                dd = Vector3.dot( vec, vector );
                 v.setVector( this.twistPoint( vec, vector, dd * factor ) );
             }
 

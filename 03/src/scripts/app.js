@@ -8,7 +8,7 @@ var Kong = require("./kong")
 var scene = new THREE.Scene()
 var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
 var renderer = new THREE.WebGLRenderer({alpha: true})
-var controls = new OrbitControls(camera);
+// var controls = new OrbitControls(camera);
 var kingKong = new Kong(scene, camera, renderer);
 
 camera.position.set(0, 0, 4)

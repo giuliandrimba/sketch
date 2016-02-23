@@ -47048,7 +47048,7 @@ var Kong = require("./kong")
 var scene = new THREE.Scene()
 var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
 var renderer = new THREE.WebGLRenderer({alpha: true})
-var controls = new OrbitControls(camera);
+// var controls = new OrbitControls(camera);
 var kingKong = new Kong(scene, camera, renderer);
 
 camera.position.set(0, 0, 4)
@@ -47095,240 +47095,75 @@ render()
 events()
 
 
-},{"./kong":8,"./three/OBJLoader":9,"./three/mod3.bundle":11,"gsap":2,"three":5,"three-orbit-controls":4}],7:[function(require,module,exports){
-require("./three/distort")
-
-var cos = 0;
-var angle = 0;
-var mod3 = undefined;
-var bend = undefined;
-var bloat = undefined;
-var breaq = undefined;
-var noise = undefined;
-var skew = undefined;
-var taper = undefined;
-var twist = undefined;
-var distort = undefined;
-var mesh = undefined;
-var gui = undefined;
-
-var options = {}
-
-module.exports = function(mesh) {
-  mesh = mesh;
-  mod3 = new MOD3.ModifierStack( MOD3.LibraryThree, mesh );
-  gui = new dat.GUI();
-
-  applyBend()
-  applyBloat()
-  applyBreak()
-  // applyNoise()
-  applySkew()
-  applyTaper()
-  applyTwist()
-  applyDistort()
-}
-
-function applyBend() {
-
-  options.bend = {}
-  options.bend.angle = 0;
-  options.bend.force = 0;
-  options.bend.offset = 0;
-
-  bend = new MOD3.Bend( );
-  bend.switchAxes = true;
-  bend.constraint = MOD3.ModConstant.LEFT;
-
-  mod3.addModifier( bend );
-
-  mod3.apply();
-
-  // GUI
-
-  var f1 = gui.addFolder('Bend');
-  f1.add(options.bend, 'angle', -180, 180).onChange(updateBend)
-  f1.add(options.bend, 'force', -5, 5).onChange(updateBend)
-  f1.add(options.bend, 'offset', -1, 1).onChange(updateBend)
-
-  // f1.open()
-
-  function updateBend() {
-    bend.setAngle( options.bend.angle );
-    bend.force = options.bend.force;
-    bend.offset = options.bend.offset;
-    mod3.apply()
-  }
-}
-
-function applyBloat() {
-  options.bloat = {}
-  options.bloat.radius = 0;
-
-  bloat = new MOD3.Bloat( );
-  mod3.addModifier( bloat );
-  mod3.apply();
-
-  var f2 = gui.addFolder('Bloat');
-  f2.add(options.bloat, 'radius', 0, 2).onChange(updateBloat)
-
-  // f2.open()
-
-  function updateBloat() {
-    bloat.setRadius( options.bloat.radius );
-    mod3.apply()
-  }
-}
-
-function applyBreak() {
-  options.breaq = {}
-  options.breaq.angle = 0;
-  options.breaq.offset = 0;
-
-  breaq = new MOD3.Break( 0,0 );
-  breaq.angle = options.breaq.angle * Math.PI / 180
-  mod3.addModifier( breaq );
-  mod3.apply();
-
-  var f2 = gui.addFolder('Break');
-  f2.add(options.breaq, 'angle', -180, 180).onChange(updateBreak)
-  f2.add(options.breaq, 'offset', -1, 1).onChange(updateBreak)
-
-  // f2.open()
-
-  function updateBreak() {
-    breaq.angle = options.breaq.angle * Math.PI / 180
-    breaq.offset = options.breaq.offset;
-    mod3.apply()
-  }
-}
-
-
-function applyNoise() {
-  options.noise = {}
-  options.noise.force = 0;
-
-  noise = new MOD3.Noise( 20 );
-  // mod3.constraintAxes(MOD3.ModConstant.X | MOD3.ModConstant.Y);
-  mod3.addModifier( noise );
-  mod3.apply();
-
-  console.log("add noise")
-
-  var f3 = gui.addFolder('Noise');
-  f3.add(options.noise, 'force', 0, 200).onChange(updateNoise)
-
-  // f3.open()
-
-  function updateNoise() {
-    console.log(options.noise.force)
-    noise.force = options.noise.force;
-    mod3.apply()
-  }
-}
-
-function applySkew() {
-  options.skew = {}
-  options.skew.force = 0;
-
-  skew = new MOD3.Skew( 0 );
-  // mod3.constraintAxes(MOD3.ModConstant.X | MOD3.ModConstant.Y);
-  mod3.addModifier( skew );
-  mod3.apply();
-
-  var f3 = gui.addFolder('skew');
-  f3.add(options.skew, 'force', -10, 10).onChange(updateskew)
-
-
-  // f3.open()
-
-  function updateskew() {
-    skew.force = options.skew.force;
-    mod3.apply()
-  }
-}
-
-function applyTaper() {
-  options.taper = {}
-  options.taper.force = 0;
-
-  taper = new MOD3.Taper( 0 );
-  // mod3.constraintAxes(MOD3.ModConstant.X | MOD3.ModConstant.Y);
-  mod3.addModifier( taper );
-  mod3.apply();
-
-  var f3 = gui.addFolder('Taper');
-  f3.add(options.taper, 'force', -2, 2).onChange(updatetaper)
-
-
-  // f3.open()
-
-  function updatetaper() {
-    taper.force = options.taper.force;
-    mod3.apply()
-  }
-}
-
-function applyTwist() {
-  options.twist = {}
-  options.twist.angle = 0;
-
-  twist = new MOD3.Twist( 0 );
-  // mod3.constraintAxes(MOD3.ModConstant.X | MOD3.ModConstant.Y);
-  mod3.addModifier( twist );
-  mod3.apply();
-
-  var f3 = gui.addFolder('Twist');
-  f3.add(options.twist, 'angle', -180, 180).onChange(updatetwist)
-
-
-  // f3.open()
-
-  function updatetwist() {
-    twist.angle = options.twist.angle * Math.PI / 180;
-    mod3.apply()
-  }
-}
-
-function applyDistort() {
-  options.distort = {}
-  options.distort.angle = 0;
-
-  distort = new MOD3.Distort( 0 );
-  // mod3.constraintAxes(MOD3.ModConstant.X | MOD3.ModConstant.Y);
-  mod3.addModifier( distort );
-  mod3.apply();
-
-  var f3 = gui.addFolder('Distort');
-  f3.add(options.distort, 'angle', -180, 180).onChange(updatedistort)
-
-
-  f3.open()
-
-  function updatedistort() {
-    distort.angle = options.distort.angle * Math.PI / 180;
-    mod3.apply()
-  }
-}
-
-},{"./three/distort":10}],8:[function(require,module,exports){
+},{"./kong":7,"./three/OBJLoader":8,"./three/mod3.bundle":10,"gsap":2,"three":5,"three-orbit-controls":4}],7:[function(require,module,exports){
 var Q = require("q");
-var distortion = require("./distortion");
+require("./three/distort")
 
 function Kong(scene, camera, renderer) {
   var loader = new THREE.OBJLoader()
   var loaded = false;
   var clock = new THREE.Clock();
+  var distort = undefined;
+  var twist = undefined;
+  var bloat = new MOD3.Bloat( );
+  bloat.radius = 0;
+  var mod3 = undefined;
+  var mod32 = undefined;
+  var self = this;
+  this.angle = 0;
 
   var material = undefined;
   var geometry = undefined;
+  var geometry2 = undefined;
+
+  var pressed = false
+  var exploding = false;
+
+  var TOTAL_VERTICES = 0;
 
   function events() {
-
+    document.addEventListener("mousedown", onMouseDown)
+    document.addEventListener("mouseup", onMouseUp)
   }
 
+  events()
+
   this.update = function() {
+    if(pressed) {
+      if(this.angle < 180)
+        this.angle += 1
+
+    }
+    if(distort)
+      distort.angle = this.angle * Math.PI / 180
+    if(twist)
+      twist.angle = this.angle * Math.PI / 180
+
+    if(bloat)
+      bloat.setRadius( bloat.radius );
+
     updateMesh()
+  }
+
+  function onMouseDown() {
+    pressed = true
+  }
+
+  function onMouseUp() {
+    pressed = false
+    explode()
+    TweenMax.to(bloat, 0.1, {radius:0.1, yoyo:true, repeat:3})
+    TweenMax.to(self, 2, {angle:0, ease:Elastic.easeOut, onComplete:function() {
+      exploding = false;
+      distort.canExplode = false;
+    }})
+  }
+
+  function explode() {
+    self.outerMesh.material.opacity = 0;
+    distort.explode()
+    TweenMax.to(self.outerMesh.material, .1, {opacity:1, repeat:13, yoyo:true,ease:Linear.easeNone});
+    // TweenMax.to(self.outerMesh.material, 3, {opacity:0, ease:Expo.easeOut})
   }
 
   function updateMesh() {
@@ -47336,8 +47171,12 @@ function Kong(scene, camera, renderer) {
       return
 
     var delta = 5 * clock.getDelta();
+    mod3.apply()
+    mod32.apply()
 
-    // self.mesh.rotation.y += 0.005 * delta;
+    self.outerMesh.geometry.verticesNeedUpdate = true;
+    self.mesh.rotation.y += 0.005 * delta;
+    self.outerMesh.rotation.y += 0.005 * delta;
   }
 
   function init() {
@@ -47348,10 +47187,24 @@ function Kong(scene, camera, renderer) {
 
   function createMesh() {
     var basic = new THREE.THREE.MeshPhongMaterial({color:0xff5400, wireframe:false, shading: THREE.FlatShading, emissive:0x000000, specular:0x111111})
-    this.mesh = new THREE.Mesh(geometry, basic);
-    scene.add(this.mesh)
+    self.wireframe = new THREE.THREE.MeshBasicMaterial({color:0xbbbbbb, wireframe:true, transparent: true, opacity:0})
+    self.mesh = new THREE.Mesh(geometry, basic);
+    self.outerMesh = new THREE.Mesh(geometry2, self.wireframe);
+    // self.outerMesh.scale.set(1.2,1.2,1.2)
+    scene.add(self.mesh)
+    scene.add(self.outerMesh)
     loaded = true;
-    distortion(this.mesh)
+    TOTAL_VERTICES = self.mesh.geometry.vertices.length
+
+    mod3 = new MOD3.ModifierStack( MOD3.LibraryThree, self.mesh );
+    mod32 = new MOD3.ModifierStack( MOD3.LibraryThree, self.outerMesh );
+
+    distort = new MOD3.Distort( 0 );
+    mod32.addModifier( distort );
+
+    twist = new MOD3.Twist( 0 );
+    mod3.addModifier( twist );
+    mod3.addModifier( bloat );
   }
 
   init()
@@ -47371,6 +47224,7 @@ function Kong(scene, camera, renderer) {
       object.traverse( function ( child ) {
         if ( child instanceof THREE.Mesh ) {
           geometry = new THREE.Geometry().fromBufferGeometry( child.geometry );
+          geometry2 = new THREE.Geometry().fromBufferGeometry( child.geometry );
         }
         deferred.resolve()
       } );
@@ -47383,7 +47237,7 @@ function Kong(scene, camera, renderer) {
 
 module.exports = Kong;
 
-},{"./distortion":7,"q":3}],9:[function(require,module,exports){
+},{"./three/distort":9,"q":3}],8:[function(require,module,exports){
 /**
  * @author mrdoob / http://mrdoob.com/
  */
@@ -47766,7 +47620,7 @@ THREE.OBJLoader.prototype = {
     }
 
 };
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /**
 *
 * MOD3  Twist Modifier
@@ -47796,6 +47650,7 @@ THREE.OBJLoader.prototype = {
             this.center = Vector3.ZERO( );
             this.mat1 = new Matrix4( );
             this.mat2 = new Matrix4( );
+            this.scaleAngle = 1;
         },
 
         vector: null,
@@ -47834,6 +47689,10 @@ THREE.OBJLoader.prototype = {
 
         },
 
+        tween: function() {
+          console.log("tween")
+        },
+
         unserialize: function( json ) {
             if ( json && this.name === json.modifier )
             {
@@ -47848,6 +47707,11 @@ THREE.OBJLoader.prototype = {
             return this;
         },
 
+        explode: function() {
+          this.canExplode = true
+          this.scaleAngle = 1;
+        },
+
         _apply: function( ) {
             var mod = this.mod, vs = mod.vertices, vc = vs.length,
                 vector = this.vector, angle = this.angle, center = this.center,
@@ -47858,12 +47722,25 @@ THREE.OBJLoader.prototype = {
                 v, dd, vec
             ;
 
+            var total = vc;
+
             // optimize loop using while counting down instead of up
             while ( --vc >= 0 )
             {
                 v = vs[ vc ];
+                if(!v.scale)
+                  v.scale = 1 + ((total / vc) * 0.1)
+
+                if(!v.scaleMult || !this.canExplode)
+                  v.scaleMult = 1;
+
+                if(this.canExplode) {
+                  v.scaleMult += angle * 0.05;
+                }
+
                 vec = v.getVector( );
-                dd = Vector3.dot( vec, vector ) + d;
+                vec = vec.multiply(new Vector3(v.scaleMult, v.scaleMult + (Math.random() * 0.1), v.scaleMult + (Math.random() * 0.1)))
+                dd = Vector3.dot( vec, vector );
                 v.setVector( this.twistPoint( vec, vector, dd * factor ) );
             }
 
@@ -47882,7 +47759,7 @@ THREE.OBJLoader.prototype = {
 
 }(MOD3);
 
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (global,__filename,__dirname){
 /**
 *
