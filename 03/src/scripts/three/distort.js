@@ -87,6 +87,7 @@
         explode: function() {
           this.canExplode = true
           this.scaleAngle = 1;
+          TweenMax.to(this, 0.2, {scaleAngle:1.1, yoyo:true, repeat:3})
         },
 
         _apply: function( ) {
@@ -111,9 +112,7 @@
                 if(!v.scaleMult || !this.canExplode)
                   v.scaleMult = 1;
 
-                if(this.canExplode) {
-                  v.scaleMult += angle * 0.05;
-                }
+                v.scaleMult = this.scaleAngle;
 
                 vec = v.getVector( );
                 vec = vec.multiply(new Vector3(v.scaleMult, v.scaleMult + (Math.random() * 0.1), v.scaleMult + (Math.random() * 0.1)))

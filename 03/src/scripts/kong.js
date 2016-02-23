@@ -62,7 +62,7 @@ function Kong(scene, camera, renderer) {
   }
 
   function explode() {
-    self.outerMesh.material.opacity = 0;
+    // self.outerMesh.material.opacity = 0;
     distort.explode()
     TweenMax.to(self.outerMesh.material, .1, {opacity:1, repeat:9, yoyo:true,ease:Linear.easeNone});
     // TweenMax.to(self.outerMesh.material, 3, {opacity:0, ease:Expo.easeOut})
@@ -89,7 +89,7 @@ function Kong(scene, camera, renderer) {
 
   function createMesh() {
     var basic = new THREE.THREE.MeshPhongMaterial({color:0xff5400, wireframe:false, shading: THREE.FlatShading, emissive:0x000000, specular:0x111111})
-    self.wireframe = new THREE.THREE.MeshBasicMaterial({color:0xbbbbbb, wireframe:true, transparent: true, opacity:0})
+    self.wireframe = new THREE.THREE.MeshBasicMaterial({color:0xbbbbbb, wireframe:true, transparent: true, opacity:0.3})
     self.mesh = new THREE.Mesh(geometry, basic);
     self.outerMesh = new THREE.Mesh(geometry2, self.wireframe);
     // self.outerMesh.scale.set(1.2,1.2,1.2)
