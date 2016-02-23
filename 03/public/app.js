@@ -47162,7 +47162,7 @@ function Kong(scene, camera, renderer) {
   function explode() {
     self.outerMesh.material.opacity = 0;
     distort.explode()
-    TweenMax.to(self.outerMesh.material, .1, {opacity:1, repeat:13, yoyo:true,ease:Linear.easeNone});
+    TweenMax.to(self.outerMesh.material, .1, {opacity:1, repeat:9, yoyo:true,ease:Linear.easeNone});
     // TweenMax.to(self.outerMesh.material, 3, {opacity:0, ease:Expo.easeOut})
   }
 
