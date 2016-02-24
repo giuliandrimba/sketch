@@ -131,8 +131,8 @@ function Kong(scene, camera, renderer) {
     self.mesh.geometry.verticesNeedUpdate = true;
 
     if(!animating) {
-      self.mesh.rotation.y += 0.01 * delta;
-      self.outerMesh.rotation.y += 0.01 * delta;
+      self.mesh.rotation.y += 0.015 * delta;
+      self.outerMesh.rotation.y += 0.015 * delta;
     }
 
   }
