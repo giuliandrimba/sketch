@@ -85,7 +85,8 @@ function Kong(scene, camera, renderer) {
   function explode() {
     if(self.angle < 180)
       return;
-    TweenMax.to(bloat, 0.5, {radius:0.1, yoyo:true, repeat:1})
+    TweenMax.to(bloat, 1, {radius:0.3, ease:Expo.easeOut})
+    TweenMax.to(bloat, 2, {radius:0, ease:Expo.easeInOut, delay:0.69})
     distort.explode()
     TweenMax.to(self.outerMesh.material, 0.8, {opacity:1, repeat:1, yoyo:true,ease:Linear.easeNone});
   }

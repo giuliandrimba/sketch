@@ -47183,7 +47183,8 @@ function Kong(scene, camera, renderer) {
   function explode() {
     if(self.angle < 180)
       return;
-    TweenMax.to(bloat, 0.5, {radius:0.1, yoyo:true, repeat:1})
+    TweenMax.to(bloat, 1, {radius:0.3, ease:Expo.easeOut})
+    TweenMax.to(bloat, 2, {radius:0, ease:Expo.easeInOut, delay:0.69})
     distort.explode()
     TweenMax.to(self.outerMesh.material, 0.8, {opacity:1, repeat:1, yoyo:true,ease:Linear.easeNone});
   }
@@ -47733,8 +47734,10 @@ THREE.OBJLoader.prototype = {
         explode: function() {
           this.canExplode = true
           this.scaleAngle = 1;
-          TweenMax.to(this, 0.7, {scaleAngle:1.1, yoyo:true, repeat:1, ease:Expo.easeOut})
-          TweenMax.to(this, 0.7, {distortScale:0.05, yoyo:true, repeat:1, ease:Expo.easeOut})
+          TweenMax.to(this, 0.8, {scaleAngle:1.3, ease:Expo.easeOut})
+          TweenMax.to(this, 2, {scaleAngle:1, ease:Expo.easeInOut, delay:0.69})
+          TweenMax.to(this, 0.8, {distortScale:0.07, yoyo:true, repeat:1, ease:Expo.easeOut})
+          TweenMax.to(this, 2, {distortScale:0, ease:Expo.easeInOut, delay:0.69})
         },
 
         _apply: function( ) {
