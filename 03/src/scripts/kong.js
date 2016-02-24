@@ -85,10 +85,15 @@ function Kong(scene, camera, renderer) {
   function explode() {
     if(self.angle < 180)
       return;
-    TweenMax.to(bloat, 1, {radius:0.3, ease:Expo.easeOut})
+    self.outerMesh.material.wireframe = false
+    TweenMax.to(bloat, 1, {radius:0.1, ease:Expo.easeOut})
     TweenMax.to(bloat, 2, {radius:0, ease:Expo.easeInOut, delay:0.69})
+    setTimeout(function() {
+      self.outerMesh.material.wireframe = true
+    }, 2000)
     distort.explode()
-    TweenMax.to(self.outerMesh.material, 0.8, {opacity:1, repeat:1, yoyo:true,ease:Linear.easeNone});
+    // TweenMax.to(self.outerMesh.material, 0.8, {opacity:1, ease:Linear.easeNone});
+    // TweenMax.to(self.outerMesh.material, 1, {opacity:0.3, ease:Linear.easeNone, delay:1});
   }
 
   function updateMesh() {
@@ -100,8 +105,8 @@ function Kong(scene, camera, renderer) {
     mod32.apply()
 
     self.outerMesh.geometry.verticesNeedUpdate = true;
-    self.mesh.rotation.y += 0.005 * delta;
-    self.outerMesh.rotation.y += 0.005 * delta;
+    self.mesh.rotation.y += 0.01 * delta;
+    self.outerMesh.rotation.y += 0.01 * delta;
   }
 
   function init() {
@@ -112,7 +117,7 @@ function Kong(scene, camera, renderer) {
 
   function createMesh() {
     var basic = new THREE.THREE.MeshPhongMaterial({color:0xcccccc, wireframe:false, shading: THREE.FlatShading, emissive:0x000000, specular:0x111111})
-    self.wireframe = new THREE.THREE.MeshBasicMaterial({color:0xbbbbbb, wireframe:true, transparent: true, opacity:0.3})
+    self.wireframe = new THREE.THREE.MeshPhongMaterial({color:0xbbbbbb, wireframe:true, transparent: true, opacity:0.3, shading: THREE.FlatShading, emissive:0x000000, specular:0x111111})
     self.mesh = new THREE.Mesh(geometry, basic);
     self.outerMesh = new THREE.Mesh(geometry2, self.wireframe);
     // self.outerMesh.scale.set(1.2,1.2,1.2)
