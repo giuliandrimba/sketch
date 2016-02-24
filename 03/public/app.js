@@ -47111,6 +47111,7 @@ function Kong(scene, camera, renderer) {
   var mod32 = undefined;
   var self = this;
   this.angle = 0;
+  this.angle2 = 0;
   var dragging = false;
 
   var mouseX = 0;
@@ -47141,10 +47142,11 @@ function Kong(scene, camera, renderer) {
 
     if(dragging) {
       this.angle = (initAngleX + (initMouseX - mouseX) * 0.5) * -1
+      this.angle2 = (initAngleX + (initMouseX - mouseX) * 0.5) * -1
     }
 
     if(distort)
-      distort.angle = this.angle * Math.PI / 180
+      distort.angle = this.angle2 * Math.PI / 180
     if(twist)
       twist.angle = this.angle * Math.PI / 180
 
@@ -47170,6 +47172,7 @@ function Kong(scene, camera, renderer) {
     dragging = false;
     document.removeEventListener("mousemove", onMouseMove)
     explode()
+    TweenMax.to(self, 2, {angle2:0, ease:Expo.easeOut})
     TweenMax.to(self, 2, {angle:0, ease:Elastic.easeOut, onComplete:function() {
       exploding = false;
       distort.canExplode = false;
@@ -47178,13 +47181,11 @@ function Kong(scene, camera, renderer) {
   }
 
   function explode() {
-    // self.outerMesh.material.opacity = 0;
     if(self.angle < 180)
       return;
     TweenMax.to(bloat, 0.5, {radius:0.1, yoyo:true, repeat:1})
     distort.explode()
-    TweenMax.to(self.outerMesh.material, 0.5, {opacity:1, repeat:1, yoyo:true,ease:Linear.easeNone});
-    // TweenMax.to(self.outerMesh.material, 3, {opacity:0, ease:Expo.easeOut})
+    TweenMax.to(self.outerMesh.material, 0.8, {opacity:1, repeat:1, yoyo:true,ease:Linear.easeNone});
   }
 
   function updateMesh() {
@@ -47672,6 +47673,7 @@ THREE.OBJLoader.prototype = {
             this.mat1 = new Matrix4( );
             this.mat2 = new Matrix4( );
             this.scaleAngle = 1;
+            this.distortScale = 0
         },
 
         vector: null,
@@ -47731,7 +47733,8 @@ THREE.OBJLoader.prototype = {
         explode: function() {
           this.canExplode = true
           this.scaleAngle = 1;
-          TweenMax.to(this, 0.6, {scaleAngle:1.5, yoyo:true, repeat:1, ease:Expo.easeOut})
+          TweenMax.to(this, 0.7, {scaleAngle:1.1, yoyo:true, repeat:1, ease:Expo.easeOut})
+          TweenMax.to(this, 0.7, {distortScale:0.05, yoyo:true, repeat:1, ease:Expo.easeOut})
         },
 
         _apply: function( ) {
@@ -47751,12 +47754,21 @@ THREE.OBJLoader.prototype = {
             {
                 v = vs[ vc ];
                 if(!v.scale)
-                  v.scale = 1 + ((total / vc) * 0.1)
+                  v.scale = (total / vc)
 
-                if(!v.scaleMult || !this.canExplode)
+                if(!v.velocity)
+                  v.velocity = 0.3 + Math.random()
+
+                if(!v.scaleMult)
                   v.scaleMult = 1;
+                  v.oldScaleMult = 1;
 
-                v.scaleMult = this.scaleAngle;
+                if(!v.distortScale)
+                  v.distortScale = 0
+
+                v.distortScale += (this.distortScale - v.distortScale) * (v.velocity<.5 ? 2*v.velocity*v.velocity : -1+2*(2-v.velocity)*v.velocity)
+
+                v.scaleMult = (this.scaleAngle + (v.scale * (v.distortScale)))
 
                 vec = v.getVector( );
                 vec = vec.multiply(new Vector3(v.scaleMult, v.scaleMult + (Math.random() * 0.1), v.scaleMult + (Math.random() * 0.1)))

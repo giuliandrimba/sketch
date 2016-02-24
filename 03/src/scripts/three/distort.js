@@ -28,6 +28,7 @@
             this.mat1 = new Matrix4( );
             this.mat2 = new Matrix4( );
             this.scaleAngle = 1;
+            this.distortScale = 0
         },
 
         vector: null,
@@ -87,7 +88,8 @@
         explode: function() {
           this.canExplode = true
           this.scaleAngle = 1;
-          TweenMax.to(this, 0.6, {scaleAngle:1.5, yoyo:true, repeat:1, ease:Expo.easeOut})
+          TweenMax.to(this, 0.7, {scaleAngle:1.1, yoyo:true, repeat:1, ease:Expo.easeOut})
+          TweenMax.to(this, 0.7, {distortScale:0.05, yoyo:true, repeat:1, ease:Expo.easeOut})
         },
 
         _apply: function( ) {
@@ -107,12 +109,21 @@
             {
                 v = vs[ vc ];
                 if(!v.scale)
-                  v.scale = 1 + ((total / vc) * 0.1)
+                  v.scale = (total / vc)
 
-                if(!v.scaleMult || !this.canExplode)
+                if(!v.velocity)
+                  v.velocity = 0.3 + Math.random()
+
+                if(!v.scaleMult)
                   v.scaleMult = 1;
+                  v.oldScaleMult = 1;
 
-                v.scaleMult = this.scaleAngle;
+                if(!v.distortScale)
+                  v.distortScale = 0
+
+                v.distortScale += (this.distortScale - v.distortScale) * (v.velocity<.5 ? 2*v.velocity*v.velocity : -1+2*(2-v.velocity)*v.velocity)
+
+                v.scaleMult = (this.scaleAngle + (v.scale * (v.distortScale)))
 
                 vec = v.getVector( );
                 vec = vec.multiply(new Vector3(v.scaleMult, v.scaleMult + (Math.random() * 0.1), v.scaleMult + (Math.random() * 0.1)))
