@@ -110,7 +110,7 @@
             {
                 v = vs[ vc ];
                 if(!v.scale)
-                  v.scale = (total / vc)
+                  v.scale = ((total + 1) / (vc + 1))
 
                 if(!v.velocity)
                   v.velocity = 0.3 + Math.random()
@@ -125,6 +125,9 @@
                 v.distortScale += (this.distortScale - v.distortScale) * (v.velocity<.5 ? 2*v.velocity*v.velocity : -1+2*(2-v.velocity)*v.velocity)
 
                 v.scaleMult = (this.scaleAngle + (v.scale * (v.distortScale)))
+
+                if(v.scaleMult > 1.3)
+                  v.scaleMult = 1.3
 
                 vec = v.getVector( );
                 vec = vec.multiply(new Vector3(v.scaleMult, v.scaleMult, v.scaleMult))

@@ -6,15 +6,13 @@ function Kong(scene, camera, renderer) {
 
   var loader = new THREE.OBJLoader()
   var loaded = false;
+  var animating = false;
 
   var clock = new THREE.Clock();
 
   var distort = undefined;
   var distortNoise = undefined;
   var twist = undefined;
-
-  var bloat = new MOD3.Bloat( );
-  bloat.radius = 0;
 
   var mod3 = undefined;
   var mod3Wireframe = undefined;
@@ -56,7 +54,7 @@ function Kong(scene, camera, renderer) {
 
     if(dragging) {
       this.angle = (initAngleX + (initMouseX - mouseX) * 0.5) * -1
-      this.angleDistort = (initAngleX + (initMouseX - mouseX) * 0.5) * -1
+      this.angleDistort = this.angle;
     }
 
     if(distort)
@@ -64,16 +62,14 @@ function Kong(scene, camera, renderer) {
     if(twist)
       twist.angle = this.angle * Math.PI / 180
 
-    if(bloat)
-      bloat.setRadius( bloat.radius );
-
     updateMesh()
   }
 
   function onMouseDown(event) {
     dragging = true
     TweenMax.killTweensOf(this);
-    initMouseX = ( event.clientX - windowHalfX ) / 2;;
+    initMouseX = ( event.clientX - windowHalfX ) / 2;
+    mouseX = ( event.clientX - windowHalfX ) / 2;
     initAngleX = self.angle;
     document.addEventListener("mousemove", onMouseMove)
   }
@@ -84,29 +80,25 @@ function Kong(scene, camera, renderer) {
 
   function onMouseUp(event) {
     dragging = false;
+    animating = true;
     document.removeEventListener("mousemove", onMouseMove)
-    // self.mesh.renderOrder = 2
-    // self.outerMesh.renderOrder = 1
     explode()
-    TweenMax.to(self, 2, {angleDistort:0, ease:Expo.easeOut})
-    TweenMax.to(self, 2, {angle:0, ease:Elastic.easeOut, onComplete:function() {
-      exploding = false;
-      distort.canExplode = false;
-      self.angle = 0;
-      // self.mesh.renderOrder = 1
-      // self.outerMesh.renderOrder = 2
-    }})
+    var time = 1
+    if(Math.abs(self.angle) > 180) {
+      time = 2
+      TweenMax.to(self, time, {angleDistort:0, ease:Expo.easeOut})
+    } else {
+      TweenMax.to(self, time, {angleDistort:0, ease:Elastic.easeOut})
+    }
+    TweenMax.to(self, time, {angle:0, ease:Elastic.easeOut})
   }
 
   function explode() {
-    if(self.angle < 180)
+    if(Math.abs(self.angle) < 180)
       return;
 
-    // TweenMax.to(bloat, 1, {radius:0.1, ease:Expo.easeOut})
-    // TweenMax.to(bloat, 2, {radius:0, ease:Expo.easeInOut, delay:0.69})
-
-    // TweenMax.to(self.mesh.material, 1, {opacity:0,ease:Expo.easeOut})
-    // TweenMax.to(self.mesh.material, 1, {opacity:1,ease:Expo.easeInOut, delay:0.9})
+    TweenMax.to(self.mesh.material, 0.3, {opacity:0.9,ease:Expo.easeOut})
+    TweenMax.to(self.mesh.material, 1, {opacity:1,ease:Expo.easeInOut, delay:0.9})
     distort.explode()
   }
 
@@ -120,9 +112,11 @@ function Kong(scene, camera, renderer) {
     mod3Explode.apply()
 
     self.outerMesh.geometry.verticesNeedUpdate = true;
+    self.mesh.geometry.verticesNeedUpdate = true;
+
     self.mesh.rotation.y += 0.01 * delta;
     self.outerMesh.rotation.y += 0.01 * delta;
-    self.explodeMesh.rotation.y += 0.01 * delta;
+
   }
 
   function init() {
@@ -136,7 +130,6 @@ function Kong(scene, camera, renderer) {
     self.wireframe = new THREE.THREE.MeshBasicMaterial({color:0xbbbbbb, wireframe:true, transparent: true, opacity:0.4 })
     self.mesh = new THREE.Mesh(geometry, basic);
     self.outerMesh = new THREE.Mesh(geometryWireframe, self.wireframe);
-    self.explodeMesh = new THREE.Mesh(geometryExplode, self.wireframeExplode);
     scene.add(self.mesh)
     scene.add(self.outerMesh)
 
@@ -152,7 +145,6 @@ function Kong(scene, camera, renderer) {
 
     twist = new MOD3.DistortNoise( 0 );
     mod3Explode.addModifier( twist );
-    mod3Explode.addModifier( bloat );
 
     mod3.addModifier( distort );
   }

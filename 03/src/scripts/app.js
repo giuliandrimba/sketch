@@ -15,15 +15,12 @@ var kingKong = new Kong(scene, camera, renderer);
 camera.position.set(0, 0, 4)
 
 scene.fog = new THREE.Fog(0xffffff, 20, -20);
-// scene.fog.color.setHSL( 0.51, 0.6, 0.6 );
-
 
 var lights = [];
 lights[0] = new THREE.PointLight( 0xffffff, 1, 0 );
 lights[1] = new THREE.PointLight( 0xffffff, 1, 0 );
 lights[2] = new THREE.PointLight( 0xffffff, 1, 0 );
 
-// lights[0].position.set( 0, 200, 0 );
 lights[1].position.set( 100, 200, 100 );
 lights[2].position.set( -100, -200, -100 );
 
