@@ -47197,8 +47197,15 @@ function Kong(scene, camera, renderer) {
     TweenMax.to(self, time, {angle:0, ease:Elastic.easeOut})
 
     if(Math.abs(self.angle) > 180) {
-      TweenMax.to(self.outerMesh.rotation, 1, {y:0, ease:Expo.easeout})
-      TweenMax.to(self.mesh.rotation, 1, {y:0, ease:Expo.easeout})
+
+      var rotationAngle = 0
+      if(self.mesh.rotation.y > 360) {
+        var rot = self.mesh.rotation.y * 180 / Math.PI
+        var rotationAngle = (rot - (rot % 360)) * Math.PI / 180
+      }
+
+      TweenMax.to(self.outerMesh.rotation, 1, {y:rotationAngle, ease:Expo.easeout})
+      TweenMax.to(self.mesh.rotation, 1, {y:rotationAngle, ease:Expo.easeout})
       setTimeout(function() {
         animating = false
       }, 2000)
@@ -47227,8 +47234,8 @@ function Kong(scene, camera, renderer) {
     self.mesh.geometry.verticesNeedUpdate = true;
 
     if(!animating) {
-      self.mesh.rotation.y += 0.015 * delta;
-      self.outerMesh.rotation.y += 0.015 * delta;
+      self.mesh.rotation.y += 0.1 * delta;
+      self.outerMesh.rotation.y += 0.1* delta;
     }
 
   }
