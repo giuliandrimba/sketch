@@ -87,7 +87,7 @@
         explode: function() {
           this.canExplode = true
           this.scaleAngle = 1;
-          TweenMax.to(this, 0.2, {scaleAngle:1.1, yoyo:true, repeat:3})
+          TweenMax.to(this, 0.6, {scaleAngle:1.5, yoyo:true, repeat:1, ease:Expo.easeOut})
         },
 
         _apply: function( ) {

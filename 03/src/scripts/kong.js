@@ -13,6 +13,15 @@ function Kong(scene, camera, renderer) {
   var mod32 = undefined;
   var self = this;
   this.angle = 0;
+  var dragging = false;
+
+  var mouseX = 0;
+  var mouseY = 0;
+  var initMouseX = 0;
+
+  var windowHalfX = window.innerWidth / 2;
+  var windowHalfY = window.innerHeight / 2;
+  var initAngleX = 0
 
   var material = undefined;
   var geometry = undefined;
@@ -31,11 +40,11 @@ function Kong(scene, camera, renderer) {
   events()
 
   this.update = function() {
-    if(pressed) {
-      if(this.angle < 180)
-        this.angle += 1
 
+    if(dragging) {
+      this.angle = (initAngleX + (initMouseX - mouseX) * 0.5) * -1
     }
+
     if(distort)
       distort.angle = this.angle * Math.PI / 180
     if(twist)
@@ -47,24 +56,36 @@ function Kong(scene, camera, renderer) {
     updateMesh()
   }
 
-  function onMouseDown() {
-    pressed = true
+  function onMouseDown(event) {
+    dragging = true
+    TweenMax.killTweensOf(this);
+    initMouseX = ( event.clientX - windowHalfX ) / 2;;
+    initAngleX = self.angle;
+    document.addEventListener("mousemove", onMouseMove)
   }
 
-  function onMouseUp() {
-    pressed = false
+  function onMouseMove(event) {
+    mouseX = ( event.clientX - windowHalfX ) / 2;
+  }
+
+  function onMouseUp(event) {
+    dragging = false;
+    document.removeEventListener("mousemove", onMouseMove)
     explode()
-    TweenMax.to(bloat, 0.1, {radius:0.1, yoyo:true, repeat:3})
     TweenMax.to(self, 2, {angle:0, ease:Elastic.easeOut, onComplete:function() {
       exploding = false;
       distort.canExplode = false;
+      self.angle = 0;
     }})
   }
 
   function explode() {
     // self.outerMesh.material.opacity = 0;
+    if(self.angle < 180)
+      return;
+    TweenMax.to(bloat, 0.5, {radius:0.1, yoyo:true, repeat:1})
     distort.explode()
-    TweenMax.to(self.outerMesh.material, .1, {opacity:1, repeat:9, yoyo:true,ease:Linear.easeNone});
+    TweenMax.to(self.outerMesh.material, 0.5, {opacity:1, repeat:1, yoyo:true,ease:Linear.easeNone});
     // TweenMax.to(self.outerMesh.material, 3, {opacity:0, ease:Expo.easeOut})
   }
 
@@ -88,7 +109,7 @@ function Kong(scene, camera, renderer) {
   }
 
   function createMesh() {
-    var basic = new THREE.THREE.MeshPhongMaterial({color:0xff5400, wireframe:false, shading: THREE.FlatShading, emissive:0x000000, specular:0x111111})
+    var basic = new THREE.THREE.MeshPhongMaterial({color:0xcccccc, wireframe:false, shading: THREE.FlatShading, emissive:0x000000, specular:0x111111})
     self.wireframe = new THREE.THREE.MeshBasicMaterial({color:0xbbbbbb, wireframe:true, transparent: true, opacity:0.3})
     self.mesh = new THREE.Mesh(geometry, basic);
     self.outerMesh = new THREE.Mesh(geometry2, self.wireframe);
