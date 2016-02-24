@@ -103,8 +103,8 @@ function Kong(scene, camera, renderer) {
     if(Math.abs(self.angle) > 180) {
 
       var rotationAngle = 0
-      if(self.mesh.rotation.y > 360) {
-        var rot = self.mesh.rotation.y * 180 / Math.PI
+      var rot = self.mesh.rotation.y * 180 / Math.PI
+      if(rot > 360) {
         var rotationAngle = (rot - (rot % 360)) * Math.PI / 180
       }
 
