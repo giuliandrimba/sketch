@@ -9,11 +9,12 @@ var scene = new THREE.Scene()
 var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
 var renderer = new THREE.WebGLRenderer({alpha: true})
 var controls = new OrbitControls(camera);
+controls.enableZoom = false
 var kingKong = new Kong(scene, camera, renderer);
 
 camera.position.set(0, 0, 4)
 
-scene.fog = new THREE.Fog(0xffffff, 15, 30);
+scene.fog = new THREE.Fog(0xffffff, 20, -20);
 // scene.fog.color.setHSL( 0.51, 0.6, 0.6 );
 
 

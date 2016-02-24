@@ -85,21 +85,28 @@ function Kong(scene, camera, renderer) {
   function onMouseUp(event) {
     dragging = false;
     document.removeEventListener("mousemove", onMouseMove)
+    // self.mesh.renderOrder = 2
+    // self.outerMesh.renderOrder = 1
     explode()
     TweenMax.to(self, 2, {angleDistort:0, ease:Expo.easeOut})
     TweenMax.to(self, 2, {angle:0, ease:Elastic.easeOut, onComplete:function() {
       exploding = false;
       distort.canExplode = false;
       self.angle = 0;
+      // self.mesh.renderOrder = 1
+      // self.outerMesh.renderOrder = 2
     }})
   }
 
   function explode() {
     if(self.angle < 180)
       return;
-    // self.outerMesh.material.wireframe = false
-    TweenMax.to(bloat, 1, {radius:0.1, ease:Expo.easeOut})
-    TweenMax.to(bloat, 2, {radius:0, ease:Expo.easeInOut, delay:0.69})
+
+    // TweenMax.to(bloat, 1, {radius:0.1, ease:Expo.easeOut})
+    // TweenMax.to(bloat, 2, {radius:0, ease:Expo.easeInOut, delay:0.69})
+
+    // TweenMax.to(self.mesh.material, 1, {opacity:0,ease:Expo.easeOut})
+    // TweenMax.to(self.mesh.material, 1, {opacity:1,ease:Expo.easeInOut, delay:0.9})
     distort.explode()
   }
 
@@ -125,15 +132,14 @@ function Kong(scene, camera, renderer) {
   }
 
   function createMesh() {
-    var basic = new THREE.THREE.MeshPhongMaterial({color:0xcccccc, wireframe:false, shading: THREE.FlatShading, emissive:0x000000, specular:0x111111})
-    self.wireframe = new THREE.THREE.MeshPhongMaterial({color:0xbbbbbb, wireframe:true, transparent: true, opacity:0.3 })
-    self.wireframeExplode = new THREE.THREE.MeshPhongMaterial({color:0xbbbbbb, wireframe:false, transparent: true, opacity:0, shading: THREE.FlatShading, emissive:0x000000, specular:0x111111})
+    var basic = new THREE.THREE.MeshPhongMaterial({color:0xcccccc, wireframe:false, transparent:true, shading: THREE.FlatShading, emissive:0x000000, specular:0xcccccc})
+    self.wireframe = new THREE.THREE.MeshBasicMaterial({color:0xbbbbbb, wireframe:true, transparent: true, opacity:0.4 })
     self.mesh = new THREE.Mesh(geometry, basic);
     self.outerMesh = new THREE.Mesh(geometryWireframe, self.wireframe);
     self.explodeMesh = new THREE.Mesh(geometryExplode, self.wireframeExplode);
     scene.add(self.mesh)
     scene.add(self.outerMesh)
-    scene.add(self.explodeMesh)
+
     loaded = true;
     TOTAL_VERTICES = self.mesh.geometry.vertices.length
 
