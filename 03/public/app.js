@@ -10197,7 +10197,7 @@ module.exports = function(THREE) {
 
 				state = STATE.ROTATE;
 
-				rotateStart.set( event.clientX, event.clientY );
+				rotateStart.set( 0, event.clientY );
 
 			} else if ( event.button === scope.mouseButtons.ZOOM ) {
 
@@ -10205,7 +10205,7 @@ module.exports = function(THREE) {
 
 				state = STATE.DOLLY;
 
-				dollyStart.set( event.clientX, event.clientY );
+				dollyStart.set( 0, event.clientY );
 
 			} else if ( event.button === scope.mouseButtons.PAN ) {
 
@@ -10213,7 +10213,7 @@ module.exports = function(THREE) {
 
 				state = STATE.PAN;
 
-				panStart.set( event.clientX, event.clientY );
+				panStart.set( 0, event.clientY );
 
 			}
 
@@ -10239,7 +10239,7 @@ module.exports = function(THREE) {
 
 				if ( scope.enableRotate === false ) return;
 
-				rotateEnd.set( event.clientX, event.clientY );
+				rotateEnd.set( 0, event.clientY );
 				rotateDelta.subVectors( rotateEnd, rotateStart );
 
 				// rotating across whole screen goes 360 degrees around
@@ -10254,7 +10254,7 @@ module.exports = function(THREE) {
 
 				if ( scope.enableZoom === false ) return;
 
-				dollyEnd.set( event.clientX, event.clientY );
+				dollyEnd.set( 0, event.clientY );
 				dollyDelta.subVectors( dollyEnd, dollyStart );
 
 				if ( dollyDelta.y > 0 ) {
@@ -10273,7 +10273,7 @@ module.exports = function(THREE) {
 
 				if ( scope.enablePan === false ) return;
 
-				panEnd.set( event.clientX, event.clientY );
+				panEnd.set( 0, event.clientY );
 				panDelta.subVectors( panEnd, panStart );
 
 				pan( panDelta.x, panDelta.y );
@@ -47162,8 +47162,10 @@ function Kong(scene, camera, renderer) {
   }
 
   function onMouseDown(event) {
+    if(animating)
+      return
     dragging = true
-    TweenMax.killTweensOf(this);
+    TweenMax.killTweensOf(self);
     initMouseX = ( event.clientX - windowHalfX ) / 2;
     mouseX = ( event.clientX - windowHalfX ) / 2;
     initAngleX = self.angle;
@@ -47176,17 +47178,31 @@ function Kong(scene, camera, renderer) {
 
   function onMouseUp(event) {
     dragging = false;
-    animating = true;
     document.removeEventListener("mousemove", onMouseMove)
+    if(animating)
+      return
+
+    TweenMax.killTweensOf(self);
+
     explode()
     var time = 1
     if(Math.abs(self.angle) > 180) {
+      animating = true;
       time = 2
       TweenMax.to(self, time, {angleDistort:0, ease:Expo.easeOut})
     } else {
       TweenMax.to(self, time, {angleDistort:0, ease:Elastic.easeOut})
     }
+
     TweenMax.to(self, time, {angle:0, ease:Elastic.easeOut})
+
+    if(Math.abs(self.angle) > 180) {
+      TweenMax.to(self.outerMesh.rotation, 1, {y:0, ease:Expo.easeout})
+      TweenMax.to(self.mesh.rotation, 1, {y:0, ease:Expo.easeout})
+      setTimeout(function() {
+        animating = false
+      }, 2000)
+    }
   }
 
   function explode() {
@@ -47210,8 +47226,10 @@ function Kong(scene, camera, renderer) {
     self.outerMesh.geometry.verticesNeedUpdate = true;
     self.mesh.geometry.verticesNeedUpdate = true;
 
-    self.mesh.rotation.y += 0.01 * delta;
-    self.outerMesh.rotation.y += 0.01 * delta;
+    if(!animating) {
+      self.mesh.rotation.y += 0.01 * delta;
+      self.outerMesh.rotation.y += 0.01 * delta;
+    }
 
   }
 
