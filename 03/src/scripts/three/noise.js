@@ -17,11 +17,11 @@
 
     var Vector3 = MOD3.Vector3, Matrix4 = MOD3.Matrix4;
 
-    var Distort = MOD3.Distort = MOD3.Class ( MOD3.Modifier, {
+    var DistortNoise = MOD3.DistortNoise = MOD3.Class ( MOD3.Modifier, {
 
         constructor: function( a ) {
             this.$super('constructor');
-            this.name = 'Distort';
+            this.name = 'DistortNoise';
             this.vector = new Vector3([0, 1, 0]).normalizeSelf( );
             this.angle = (a !== undef) ? a : 0;
             this.center = Vector3.ZERO( );
@@ -86,11 +86,6 @@
         },
 
         explode: function() {
-          this.scaleAngle = 1;
-          TweenMax.to(this, 0.8, {scaleAngle:1.1, ease:Expo.easeOut})
-          TweenMax.to(this, 2, {scaleAngle:1, ease:Expo.easeInOut, delay:0.69})
-          TweenMax.to(this, 0.8, {distortScale:0.07, yoyo:true, repeat:1, ease:Expo.easeOut})
-          TweenMax.to(this, 2, {distortScale:0, ease:Expo.easeInOut, delay:0.69})
         },
 
         _apply: function( ) {
@@ -109,25 +104,9 @@
             while ( --vc >= 0 )
             {
                 v = vs[ vc ];
-                if(!v.scale)
-                  v.scale = (total / vc)
-
-                if(!v.velocity)
-                  v.velocity = 0.3 + Math.random()
-
-                if(!v.scaleMult)
-                  v.scaleMult = 1;
-                  v.oldScaleMult = 1;
-
-                if(!v.distortScale)
-                  v.distortScale = 0
-
-                v.distortScale += (this.distortScale - v.distortScale) * (v.velocity<.5 ? 2*v.velocity*v.velocity : -1+2*(2-v.velocity)*v.velocity)
-
-                v.scaleMult = (this.scaleAngle + (v.scale * (v.distortScale)))
 
                 vec = v.getVector( );
-                vec = vec.multiply(new Vector3(v.scaleMult, v.scaleMult, v.scaleMult))
+                vec = vec.multiply(new Vector3(1, 1 + (Math.random() * 0.1), 1 + (Math.random() * 0.1)))
                 dd = Vector3.dot( vec, vector );
                 v.setVector( this.twistPoint( vec, vector, dd * factor ) );
             }
