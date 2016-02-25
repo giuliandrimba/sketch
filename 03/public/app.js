@@ -47813,8 +47813,8 @@ THREE.OBJLoader.prototype = {
 
                 v.scaleMult = (this.scaleAngle + (v.scale * (v.distortScale)))
 
-                if(v.scaleMult > 1.3)
-                  v.scaleMult = 1.3
+                if(v.scaleMult > 1.7)
+                  v.scaleMult = 1.7
 
                 vec = v.getVector( );
                 vec = vec.multiply(new Vector3(v.scaleMult, v.scaleMult, v.scaleMult))
