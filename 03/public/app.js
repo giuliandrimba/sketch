@@ -47054,7 +47054,7 @@ var kingKong = new Kong(scene, camera, renderer);
 
 camera.position.set(0, 0, 4)
 
-scene.fog = new THREE.Fog(0xffffff, 20, -20);
+scene.fog = new THREE.Fog(0x222222, 20, -20);
 
 var lights = [];
 lights[0] = new THREE.PointLight( 0xffffff, 1, 0 );
@@ -47155,8 +47155,10 @@ function Kong(scene, camera, renderer) {
 
     if(distort)
       distort.angle = this.angleDistort * Math.PI / 180
-    if(twist)
-      twist.angle = this.angle * Math.PI / 180
+    if(twist) {
+      twist.angle = this.angleDistort * Math.PI / 180
+      // twist.angle = this.angle * Math.PI / 180
+    }
 
     updateMesh()
   }
@@ -47219,6 +47221,7 @@ function Kong(scene, camera, renderer) {
     TweenMax.to(self.mesh.material, 0.3, {opacity:0.9,ease:Expo.easeOut})
     TweenMax.to(self.mesh.material, 1, {opacity:1,ease:Expo.easeInOut, delay:0.9})
     distort.explode()
+    twist.explode()
   }
 
   function updateMesh() {
@@ -47247,10 +47250,11 @@ function Kong(scene, camera, renderer) {
   }
 
   function createMesh() {
-    var basic = new THREE.THREE.MeshPhongMaterial({color:0xcccccc, wireframe:false, transparent:true, shading: THREE.FlatShading, emissive:0x000000, specular:0xcccccc})
-    self.wireframe = new THREE.THREE.MeshBasicMaterial({color:0xbbbbbb, wireframe:true, transparent: true, opacity:0.4 })
+    var basic = new THREE.THREE.MeshPhongMaterial({color:0x4c4c4c, wireframe:false, transparent:true, shading: THREE.FlatShading, emissive:0x000000, specular:0x000000})
+    self.wireframe = new THREE.THREE.MeshBasicMaterial({color:0xbbbbbb, wireframe:true, transparent: true, opacity:0.1 })
     self.mesh = new THREE.Mesh(geometry, basic);
     self.outerMesh = new THREE.Mesh(geometryWireframe, self.wireframe);
+    self.outerMesh.scale.set(1.3,1.3,1.3)
     scene.add(self.mesh)
     scene.add(self.outerMesh)
 
@@ -47893,6 +47897,7 @@ THREE.OBJLoader.prototype = {
             this.mat2 = new Matrix4( );
             this.scaleAngle = 1;
             this.distortScale = 0
+            this.noiseMag = 0.03
         },
 
         vector: null,
@@ -47962,6 +47967,8 @@ THREE.OBJLoader.prototype = {
                 v, dd, vec
             ;
 
+            this.noiseMag = 0
+
             var total = vc;
 
             // optimize loop using while counting down instead of up
@@ -47970,7 +47977,7 @@ THREE.OBJLoader.prototype = {
                 v = vs[ vc ];
 
                 vec = v.getVector( );
-                vec = vec.multiply(new Vector3(1, 1 + (Math.random() * 0.1), 1 + (Math.random() * 0.1)))
+                vec = vec.multiply(new Vector3(1 + (Math.random() * this.noiseMag), 1 + (Math.random() * this.noiseMag), 1 + (Math.random() * this.noiseMag)))
                 dd = Vector3.dot( vec, vector );
                 v.setVector( this.twistPoint( vec, vector, dd * factor ) );
             }

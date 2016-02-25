@@ -29,6 +29,7 @@
             this.mat2 = new Matrix4( );
             this.scaleAngle = 1;
             this.distortScale = 0
+            this.noiseMag = 0.03
         },
 
         vector: null,
@@ -98,6 +99,8 @@
                 v, dd, vec
             ;
 
+            this.noiseMag = 0
+
             var total = vc;
 
             // optimize loop using while counting down instead of up
@@ -106,7 +109,7 @@
                 v = vs[ vc ];
 
                 vec = v.getVector( );
-                vec = vec.multiply(new Vector3(1, 1 + (Math.random() * 0.1), 1 + (Math.random() * 0.1)))
+                vec = vec.multiply(new Vector3(1 + (Math.random() * this.noiseMag), 1 + (Math.random() * this.noiseMag), 1 + (Math.random() * this.noiseMag)))
                 dd = Vector3.dot( vec, vector );
                 v.setVector( this.twistPoint( vec, vector, dd * factor ) );
             }

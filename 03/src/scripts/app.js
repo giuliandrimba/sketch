@@ -14,7 +14,7 @@ var kingKong = new Kong(scene, camera, renderer);
 
 camera.position.set(0, 0, 4)
 
-scene.fog = new THREE.Fog(0xffffff, 20, -20);
+scene.fog = new THREE.Fog(0x222222, 20, -20);
 
 var lights = [];
 lights[0] = new THREE.PointLight( 0xffffff, 1, 0 );
