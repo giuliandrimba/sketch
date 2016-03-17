@@ -45169,7 +45169,7 @@ function createScene() {
   environment = new Environment(scene, camera, renderer)
   outerDiscoSphere = new DiscoSphere(scene, camera, renderer, environment, false);
   outerDiscoSphere.mesh.scale.set(15,15,15);
-  outerDiscoSphere.rotationSpeed = 0.001;
+  outerDiscoSphere.rotationSpeed = 0.003;
   discoSphere = new DiscoSphere(scene, camera, renderer, environment, true);
 }
 
