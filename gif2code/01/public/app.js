@@ -45152,7 +45152,7 @@ function init() {
 }
 
 function addlights() {
-  directionalLight = new THREE.DirectionalLight( 0xffffff, 2 );
+  directionalLight = new THREE.DirectionalLight( 0xffffff, 3 );
   directionalLight.position.y = 30;
   directionalLight.position.z = 30;
   directionalLight.position.x = 30;
@@ -45206,15 +45206,23 @@ function DiscoSphere(scene, camera, renderer, environment, depth) {
     this.geometry = new THREE.SphereGeometry( 1, 40, 20 );
     this.geometry.computeFaceNormals()
 
+    var texture = THREE.ImageUtils.loadTexture('./images/grid.jpg')
+    // texture.anisotropy = 4;
+    // texture.repeat.set( 0.998, 0.998 );
+    // texture.offset.set( 0.1, 0);
+    // texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    // texture.format = THREE.RGBFormat;
+
     this.material = new THREE.MeshPhongMaterial({
       envMap    : environment.getEnvMap(),
+      bumpMap: texture,
       shading   : THREE.FlatShading,
       color   : 'white',
       reflectivity  : 1.0,
       specular: 0x222222,
-      emissive  : '#222',
-      shininess : 50,
-      color: 0x634140,
+      emissive  : '#fff',
+      shininess : 100,
+      color: 0xaaaaaa,
       side: THREE.DoubleSide,
       depthWrite: depth
     } );
@@ -45243,10 +45251,16 @@ function Environment(camera, scene, renderer) {
   //   'front', 'back'
   // ])
 
+  // var textureCube = THREEx.createTextureCube([
+  //   './images/panorama/env.threejs3.png', './images/panorama/env.threejs1.png',
+  //   './images/panorama/env.threejs4.png', './images/panorama/env.threejs5.png',
+  //   './images/panorama/env.threejs2.png', './images/panorama/env.threejs0.png'
+  // ])
+
   var textureCube = THREEx.createTextureCube([
-    './images/panorama/env.threejs3.png', './images/panorama/env.threejs1.png',
-    './images/panorama/env.threejs4.png', './images/panorama/env.threejs5.png',
-    './images/panorama/env.threejs2.png', './images/panorama/env.threejs0.png'
+    './images/panorama/px.jpg', './images/panorama/nx.jpg',
+    './images/panorama/py.jpg', './images/panorama/ny.jpg',
+    './images/panorama/pz.jpg', './images/panorama/nz.jpg'
   ])
 
   cubeMap = THREEx.createSkymap({textureCube:textureCube})

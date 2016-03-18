@@ -86,7 +86,7 @@ function init() {
 }
 
 function addlights() {
-  directionalLight = new THREE.DirectionalLight( 0xffffff, 2 );
+  directionalLight = new THREE.DirectionalLight( 0xffffff, 3 );
   directionalLight.position.y = 30;
   directionalLight.position.z = 30;
   directionalLight.position.x = 30;
