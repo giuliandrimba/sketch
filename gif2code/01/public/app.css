@@ -47,6 +47,16 @@ table {
   border-spacing: 0;
 }
 
+@font-face {
+  font-family: 'GothamLight';
+  src: url('/fonts/gotham/Gotham-Light.eot'); /* IE9 Compat Modes */
+  src: url('/fonts/gotham/Gotham-Light.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('/fonts/gotham/Gotham-Light.woff2') format('woff2'), /* Super Modern Browsers */
+       url('/fonts/gotham/Gotham-Light.woff') format('woff'), /* Pretty Modern Browsers */
+       url('/fonts/gotham/Gotham-Light.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('/fonts/gotham/Gotham-Light.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+
 .sketches {
   position: absolute;
   top: 50%;
@@ -58,4 +68,14 @@ table {
 
 .code {
   float: left;
+}
+
+.title {
+  font-family: "GothamLight";
+  font-size: 14px;
+  letter-spacing: 2px;
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
 }
