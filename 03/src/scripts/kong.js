@@ -157,7 +157,7 @@ function Kong(scene, camera, renderer) {
     var basic = new THREE.THREE.MeshPhongMaterial({color:0x4c4c4c, wireframe:false, transparent:true, shading: THREE.FlatShading, emissive:0x000000, specular:0x000000})
     self.wireframe = new THREE.THREE.MeshBasicMaterial({color:0xbbbbbb, wireframe:true, transparent: true, opacity:0.1 })
     self.mesh = new THREE.Mesh(geometry, basic);
-    geometryWireframe = new THREE.SphereGeometry( 1.1, 40, 40);
+    geometryWireframe = new THREE.SphereGeometry( 1.1, 80, 80);
     self.outerMesh = new THREE.Mesh(geometryWireframe, self.wireframe);
     self.outerMesh.scale.set(1.3,1.3,1.3)
     scene.add(self.mesh)
