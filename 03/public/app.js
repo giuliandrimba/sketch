@@ -47256,7 +47256,7 @@ function Kong(scene, camera, renderer) {
     self.outerMesh = new THREE.Mesh(geometryWireframe, self.wireframe);
     self.outerMesh.scale.set(1.3,1.3,1.3)
     scene.add(self.mesh)
-    scene.add(self.outerMesh)
+    // scene.add(self.outerMesh)
 
     loaded = true;
     TOTAL_VERTICES = self.mesh.geometry.vertices.length
