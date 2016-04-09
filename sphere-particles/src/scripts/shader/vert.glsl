@@ -2,10 +2,12 @@
 #pragma glslify: ease = require(glsl-easings/quintic-in-out)
 
 uniform float v_frame;
+uniform float opacity;
 uniform float total_frames;
 attribute vec3 displacement;
 attribute vec3 springs;
 attribute vec3 initPos;
+varying float vOpacity;
 
 vec3 snoiseVec3( vec3 x ){
   float s  = snoise(vec3( x ));
@@ -25,8 +27,16 @@ void main() {
 
     vec3 pos = position + normal * displacement * easingPercent;
 
-    vec3 rnd = snoiseVec3(pos - initPos) * 1.3;
-    pos += rnd * easingPercent;
+    vec3 a = position + normal * displacement;
+    vec3 b = initPos;
+    float total_d = abs(distance(a, b));
+    float d = abs(distance(pos, b));
+    vOpacity = d / total_d;
+
+    float n = snoise(pos);
+    float theta = radians(v_frame * n);
+    // pos += vec3(cos(theta), sin(theta), sin(theta)) * easingPercent;
+
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
 }

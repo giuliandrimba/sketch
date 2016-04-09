@@ -19,7 +19,7 @@ function render() {
   renderer = new THREE.WebGLRenderer({alpha: false, antialias : true, transparent: false})
 
   camera.position.set(0, 0, 4)
-  scene.fog = new THREE.Fog(0x000000, 20, -20);
+  scene.fog = new THREE.Fog(0x000000, 20, -1000);
 
   dot = new Dot(scene, camera, renderer);
 

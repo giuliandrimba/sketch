@@ -31,6 +31,8 @@ export default class Dot {
     var numFaces = geometry.faces.length;
     var numVertices = geometry.vertices.length
 
+    console.log(geometry);
+
     this.geometry = new THREE.BufferGeometry().fromGeometry( geometry );
 
     var displacement = new Float32Array( numFaces * 3 * 3 );
@@ -45,8 +47,11 @@ export default class Dot {
 
       if(f % 9 === 0) {
         var rnd = Math.random() * 0.2;
-        var spring = 1.0 + Math.random()
-        var d = 9 * ( 1.1 - Math.random() );
+      }
+
+      if(f % 3 === 0) {
+        var d = 5 * Math.random();
+        var spring = Math.random();
       }
 
       displacement[ index      ] = d;
