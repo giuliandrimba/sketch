@@ -31,11 +31,7 @@ void main() {
     vec3 b = initPos;
     float total_d = abs(distance(a, b));
     float d = abs(distance(pos, b));
-    vOpacity = d / total_d;
-
-    float n = snoise(pos);
-    float theta = radians(v_frame * n);
-    // pos += vec3(cos(theta), sin(theta), sin(theta)) * easingPercent;
+    vOpacity = (d / total_d);
 
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );

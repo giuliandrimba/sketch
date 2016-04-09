@@ -14,6 +14,7 @@ export default class Dot {
     this.time = 1.0;
     this.frame = 0;
     this.total_frames = 60 * 4;
+    this.canCountFrames = false;
 
     Dot.scope = this;
 
@@ -32,6 +33,7 @@ export default class Dot {
     var numVertices = geometry.vertices.length
 
     this.geometry = new THREE.BufferGeometry().fromGeometry( geometry );
+    var center = new THREE.Vector3(0,0,0);
 
     var displacement = new Float32Array( numFaces * 3 * 3 );
     var initPos = new Float32Array( numFaces * 3 * 3 );
@@ -43,12 +45,14 @@ export default class Dot {
       initPos[ index + 1 ] = geometry.vertices[ f ].y;
       initPos[ index + 2 ] = geometry.vertices[ f ].z;
 
-      if(f % 9 === 0) {
-        var rnd = 0.5 * Math.random();
+
+      if(f % 3 === 0) {
+        var rnd = 0.9 + (((geometry.vertices[ f ].y / 2) + (geometry.vertices[ f ].x / 2 * -1)) * -1);
       }
 
       if(f % 3 === 0) {
-        var d = (10 * Math.random()) - 5;
+        // var d = 20 * (2 - Math.random());
+        var d = (10 * Math.random());
       }
 
       displacement[ index      ] = d;
@@ -59,6 +63,8 @@ export default class Dot {
       springs[ index + 1 ] = 0.8 + rnd;
       springs[ index + 2 ] = 0.8 + rnd;
     }
+
+    // console.log(geometry.vertices[0].distanceTo(new THREE.Vector3(0,0,0)))
 
     this.geometry.addAttribute( 'displacement', new THREE.BufferAttribute( displacement, 3 ) );
     this.geometry.addAttribute( 'springs', new THREE.BufferAttribute( springs, 3 ) );
@@ -79,6 +85,8 @@ export default class Dot {
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.scene.add(this.mesh);  
 
+    this.mesh.rotation.y += Math.PI
+
     this.implode()
   }
 
@@ -86,12 +94,18 @@ export default class Dot {
     TweenMax.killTweensOf(this.mesh.material.uniforms[ 'opacity' ]);
     this.frame = 0;
     this.mesh.material.uniforms[ 'opacity' ].value = 0.0;
-    TweenMax.to(this.mesh.material.uniforms[ 'opacity' ], 4, {value:1.0, ease:Expo.easeInOut})
+    TweenMax.to(this.mesh.material.uniforms[ 'opacity' ], 1, {value:1.0, ease:Expo.easeInOut})
+    setTimeout(()=>{
+      this.canCountFrames = true;
+    }, 700)
   }
 
   update() {
-    this.frame++;
-    this.mesh.material.uniforms['v_frame'].value = this.frame;
+    if(this.canCountFrames) {
+      this.frame+= 1;
+      this.mesh.material.uniforms['v_frame'].value = this.frame;
+      this.mesh.rotation.y += 0.01;
+    }
     this.mesh.rotation.y += 0.01;
       
   }
