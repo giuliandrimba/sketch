@@ -48405,8 +48405,6 @@ var Dot = function () {
       var numFaces = geometry.faces.length;
       var numVertices = geometry.vertices.length;
 
-      console.log(geometry);
-
       this.geometry = new THREE.BufferGeometry().fromGeometry(geometry);
 
       var displacement = new Float32Array(numFaces * 3 * 3);
@@ -48420,12 +48418,11 @@ var Dot = function () {
         initPos[index + 2] = geometry.vertices[f].z;
 
         if (f % 9 === 0) {
-          var rnd = Math.random() * 0.2;
+          var rnd = 0.5 * Math.random();
         }
 
         if (f % 3 === 0) {
-          var d = 5 * Math.random();
-          var spring = Math.random();
+          var d = 10 * Math.random() - 5;
         }
 
         displacement[index] = d;
