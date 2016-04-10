@@ -8,6 +8,7 @@ attribute vec3 displacement;
 attribute vec3 springs;
 attribute vec3 initPos;
 varying float vOpacity;
+uniform float animType;
 
 vec3 snoiseVec3( vec3 x ){
   float s  = snoise(vec3( x ));
@@ -33,6 +34,16 @@ void main() {
     float d = abs(distance(pos, b));
     vOpacity = (d / total_d);
 
+    if(animType == 0.0) {
+      pos += vec3(sin(d));
+    }
+    if(animType == 1.0) {
+      pos += vec3(sin(d)) * (snoiseVec3(vec3(sin(d))));
+    }
+
+    if(animType == 2.0) {
+      pos += sin(d * easingPercent * springs.x) * 2.0;
+    }
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
 }

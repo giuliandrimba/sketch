@@ -16,6 +16,7 @@ export default class Dot {
     this.total_frames = 60 * 4;
     this.canCountFrames = false;
     this.timeout = undefined;
+    this.animType = 0;
 
     Dot.scope = this;
 
@@ -75,7 +76,8 @@ export default class Dot {
       uniforms : {
         total_frames : {type: 'f', value: this.total_frames},
         v_frame      :{type: 'f', value: 0.0},
-        opacity      : {type: 'f', value: 0.0}
+        opacity      : {type: 'f', value: 0.0},
+        animType      : {type: 'f', value: 0.0}
       },
       vertexShader : glslify('./shader/vert.glsl'),
       fragmentShader : glslify('./shader/frag.glsl'),
@@ -96,11 +98,16 @@ export default class Dot {
     this.mesh.rotation.y = 0;
     this.mesh.material.uniforms[ 'opacity' ].value = 0.0;
     this.mesh.material.uniforms['v_frame'].value = this.frame;
+    this.mesh.material.uniforms['animType'].value = this.animType;
     TweenMax.to(this.mesh.material.uniforms[ 'opacity' ], 2, {value:1.0, ease:Expo.easeOut})
     window.clearTimeout(this.timeout);
     this.timeout = setTimeout(()=>{
       this.canCountFrames = true;
     }, 1000)
+
+    this.animType++;
+    if(this.animType > 2)
+      this.animType = 0
   }
 
   update() {
