@@ -15,6 +15,7 @@ export default class Dot {
     this.frame = 0;
     this.total_frames = 60 * 4;
     this.canCountFrames = false;
+    this.timeout = undefined;
 
     Dot.scope = this;
 
@@ -52,7 +53,7 @@ export default class Dot {
 
       if(f % 3 === 0) {
         // var d = 20 * (2 - Math.random());
-        var d = (10 * Math.random());
+        var d = (50 * Math.random());
       }
 
       displacement[ index      ] = d;
@@ -78,35 +79,37 @@ export default class Dot {
       },
       vertexShader : glslify('./shader/vert.glsl'),
       fragmentShader : glslify('./shader/frag.glsl'),
-      shading     : THREE.FlatShading,
       transparent : true
     })
 
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.scene.add(this.mesh);  
-
-    this.mesh.rotation.y += Math.PI
+    // this.mesh.rotation.y += Math.PI
 
     this.implode()
   }
 
   implode() {
     TweenMax.killTweensOf(this.mesh.material.uniforms[ 'opacity' ]);
+    this.canCountFrames = false;
     this.frame = 0;
+    this.mesh.rotation.y = 0;
     this.mesh.material.uniforms[ 'opacity' ].value = 0.0;
-    TweenMax.to(this.mesh.material.uniforms[ 'opacity' ], 1, {value:1.0, ease:Expo.easeInOut})
-    setTimeout(()=>{
+    this.mesh.material.uniforms['v_frame'].value = this.frame;
+    TweenMax.to(this.mesh.material.uniforms[ 'opacity' ], 2, {value:1.0, ease:Expo.easeOut})
+    window.clearTimeout(this.timeout);
+    this.timeout = setTimeout(()=>{
       this.canCountFrames = true;
-    }, 700)
+    }, 1000)
   }
 
   update() {
     if(this.canCountFrames) {
       this.frame+= 1;
       this.mesh.material.uniforms['v_frame'].value = this.frame;
-      this.mesh.rotation.y += 0.01;
     }
-    this.mesh.rotation.y += 0.01;
+    if(this.mesh.rotation.y < 3.8)
+      this.mesh.rotation.y += 0.02;
       
   }
 }

@@ -48358,6 +48358,8 @@ function loop() {
   renderer.render(scene, camera);
 }
 
+window.scene = scene;
+
 },{"./dot":5,"gsap":1,"three":2}],5:[function(require,module,exports){
 "use strict";
 
@@ -48387,6 +48389,7 @@ var Dot = function () {
     this.frame = 0;
     this.total_frames = 60 * 4;
     this.canCountFrames = false;
+    this.timeout = undefined;
 
     Dot.scope = this;
 
@@ -48425,7 +48428,7 @@ var Dot = function () {
 
         if (f % 3 === 0) {
           // var d = 20 * (2 - Math.random());
-          var d = 10 * Math.random();
+          var d = 50 * Math.random();
         }
 
         displacement[index] = d;
@@ -48450,15 +48453,13 @@ var Dot = function () {
           opacity: { type: 'f', value: 0.0 }
         },
         vertexShader: "#define GLSLIFY 1\n//\n// Description : Array and textureless GLSL 2D/3D/4D simplex\n//               noise functions.\n//      Author : Ian McEwan, Ashima Arts.\n//  Maintainer : ijm\n//     Lastmod : 20110822 (ijm)\n//     License : Copyright (C) 2011 Ashima Arts. All rights reserved.\n//               Distributed under the MIT License. See LICENSE file.\n//               https://github.com/ashima/webgl-noise\n//\n\nvec3 mod289(vec3 x) {\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 mod289(vec4 x) {\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 permute(vec4 x) {\n     return mod289(((x*34.0)+1.0)*x);\n}\n\nvec4 taylorInvSqrt(vec4 r)\n{\n  return 1.79284291400159 - 0.85373472095314 * r;\n}\n\nfloat snoise(vec3 v)\n  {\n  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;\n  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\n\n// First corner\n  vec3 i  = floor(v + dot(v, C.yyy) );\n  vec3 x0 =   v - i + dot(i, C.xxx) ;\n\n// Other corners\n  vec3 g = step(x0.yzx, x0.xyz);\n  vec3 l = 1.0 - g;\n  vec3 i1 = min( g.xyz, l.zxy );\n  vec3 i2 = max( g.xyz, l.zxy );\n\n  //   x0 = x0 - 0.0 + 0.0 * C.xxx;\n  //   x1 = x0 - i1  + 1.0 * C.xxx;\n  //   x2 = x0 - i2  + 2.0 * C.xxx;\n  //   x3 = x0 - 1.0 + 3.0 * C.xxx;\n  vec3 x1 = x0 - i1 + C.xxx;\n  vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y\n  vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y\n\n// Permutations\n  i = mod289(i);\n  vec4 p = permute( permute( permute(\n             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))\n           + i.y + vec4(0.0, i1.y, i2.y, 1.0 ))\n           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\n\n// Gradients: 7x7 points over a square, mapped onto an octahedron.\n// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)\n  float n_ = 0.142857142857; // 1.0/7.0\n  vec3  ns = n_ * D.wyz - D.xzx;\n\n  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)\n\n  vec4 x_ = floor(j * ns.z);\n  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)\n\n  vec4 x = x_ *ns.x + ns.yyyy;\n  vec4 y = y_ *ns.x + ns.yyyy;\n  vec4 h = 1.0 - abs(x) - abs(y);\n\n  vec4 b0 = vec4( x.xy, y.xy );\n  vec4 b1 = vec4( x.zw, y.zw );\n\n  //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0;\n  //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0;\n  vec4 s0 = floor(b0)*2.0 + 1.0;\n  vec4 s1 = floor(b1)*2.0 + 1.0;\n  vec4 sh = -step(h, vec4(0.0));\n\n  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;\n  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;\n\n  vec3 p0 = vec3(a0.xy,h.x);\n  vec3 p1 = vec3(a0.zw,h.y);\n  vec3 p2 = vec3(a1.xy,h.z);\n  vec3 p3 = vec3(a1.zw,h.w);\n\n//Normalise gradients\n  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\n  p0 *= norm.x;\n  p1 *= norm.y;\n  p2 *= norm.z;\n  p3 *= norm.w;\n\n// Mix final noise value\n  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\n  m = m * m;\n  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),\n                                dot(p2,x2), dot(p3,x3) ) );\n  }\n\nfloat qinticInOut(float t) {\n  return t < 0.5\n    ? +16.0 * pow(t, 5.0)\n    : -0.5 * pow(2.0 * t - 2.0, 5.0) + 1.0;\n}\n\nuniform float v_frame;\nuniform float opacity;\nuniform float total_frames;\nattribute vec3 displacement;\nattribute vec3 springs;\nattribute vec3 initPos;\nvarying float vOpacity;\n\nvec3 snoiseVec3( vec3 x ){\n  float s  = snoise(vec3( x ));\n  float s1 = snoise(vec3( x.y - 19.1 , x.z + 33.4 , x.x + 47.2 ));\n  float s2 = snoise(vec3( x.z + 74.2 , x.x - 124.5 , x.y + 99.4 ));\n  vec3 c = vec3( s , s1 , s2 );\n  return c;\n}\n\nvoid main() {\n\n    float motionInPercent = ((v_frame * springs.x) / total_frames);\n    float easingPercent = 0.0;\n    if(motionInPercent < 1.0) {\n      easingPercent = qinticInOut(1.0 - motionInPercent);\n    }\n\n    vec3 pos = position + normal * displacement * easingPercent;\n\n    vec3 a = position + normal * displacement;\n    vec3 b = initPos;\n    float total_d = abs(distance(a, b));\n    float d = abs(distance(pos, b));\n    vOpacity = (d / total_d);\n\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );\n}",
-        fragmentShader: "#define GLSLIFY 1\nuniform float opacity;\nvarying float vOpacity;\n\nvoid main()\n{  \n    gl_FragColor = vec4(1.0,0.0,0.0,opacity - vOpacity);\n}\n",
-        shading: THREE.FlatShading,
+        fragmentShader: "#define GLSLIFY 1\nuniform float opacity;\nvarying float vOpacity;\n\nvoid main()\n{  \n    gl_FragColor = vec4(1.0,0.0,0.0,(1.2 * opacity) - vOpacity);\n}\n",
         transparent: true
       });
 
       this.mesh = new THREE.Mesh(this.geometry, this.material);
       this.scene.add(this.mesh);
-
-      this.mesh.rotation.y += Math.PI;
+      // this.mesh.rotation.y += Math.PI
 
       this.implode();
     }
@@ -48468,12 +48469,16 @@ var Dot = function () {
       var _this = this;
 
       TweenMax.killTweensOf(this.mesh.material.uniforms['opacity']);
+      this.canCountFrames = false;
       this.frame = 0;
+      this.mesh.rotation.y = 0;
       this.mesh.material.uniforms['opacity'].value = 0.0;
-      TweenMax.to(this.mesh.material.uniforms['opacity'], 1, { value: 1.0, ease: Expo.easeInOut });
-      setTimeout(function () {
+      this.mesh.material.uniforms['v_frame'].value = this.frame;
+      TweenMax.to(this.mesh.material.uniforms['opacity'], 2, { value: 1.0, ease: Expo.easeOut });
+      window.clearTimeout(this.timeout);
+      this.timeout = setTimeout(function () {
         _this.canCountFrames = true;
-      }, 700);
+      }, 1000);
     }
   }, {
     key: "update",
@@ -48481,9 +48486,8 @@ var Dot = function () {
       if (this.canCountFrames) {
         this.frame += 1;
         this.mesh.material.uniforms['v_frame'].value = this.frame;
-        this.mesh.rotation.y += 0.01;
       }
-      this.mesh.rotation.y += 0.01;
+      if (this.mesh.rotation.y < 3.8) this.mesh.rotation.y += 0.02;
     }
   }]);
 

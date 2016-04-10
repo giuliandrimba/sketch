@@ -41,3 +41,5 @@ function loop() {
   camera.lookAt( scene.position )
   renderer.render(scene, camera);
 }
+
+window.scene = scene;

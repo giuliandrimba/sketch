@@ -3,5 +3,5 @@ varying float vOpacity;
 
 void main()
 {  
-    gl_FragColor = vec4(1.0,0.0,0.0,opacity - vOpacity);
+    gl_FragColor = vec4(1.0,0.0,0.0,(1.2 * opacity) - vOpacity);
 }
