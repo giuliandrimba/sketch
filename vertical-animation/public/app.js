@@ -7585,6 +7585,11 @@ if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); } //necessary in case Tween
 },{}],2:[function(require,module,exports){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = init;
+
 var _gsap = require("gsap");
 
 var _gsap2 = _interopRequireDefault(_gsap);
@@ -7604,8 +7609,7 @@ var filters = undefined;
 var defs = undefined;
 var blurFilter = undefined;
 
-ready(function () {
-
+function init() {
   main = document.getElementById("main");
 
   filters = document.querySelector(".filters"); // the SVG that contains the filters
@@ -7618,7 +7622,7 @@ ready(function () {
   }
 
   document.body.addEventListener("mousedown", animate);
-});
+}
 
 function animate() {
   _gsap2.default.set(effect, { y: 0 });
@@ -7626,14 +7630,28 @@ function animate() {
   effect.blur = -1;
 
   var _y = window.innerHeight * 5;
-  _gsap2.default.to(effect, 3, { y: -_y, ease: Expo.easeInOut, onUpdate: function onUpdate() {
+  _gsap2.default.to(effect, 2, { y: -_y, ease: Expo.easeInOut, onUpdate: function onUpdate() {
       main.style.transform = "translate3d(0," + Math.round(effect.y) + "px, 0)";
     } });
-  // TweenMax.to(effect, 3, { blur:1, ease:Expo.easeInOut, onUpdate:function() {
-  //   var b = Math.round(50 - Math.abs(effect.blur * 50))
-  //   blurFilter.setAttribute("stdDeviation",`0,${b}`); 
-  // }})
+  _gsap2.default.to(effect, 2, { blur: 1, ease: Expo.easeInOut, onUpdate: function onUpdate() {
+      var b = Math.round(50 - Math.abs(effect.blur * 50));
+      blurFilter.setAttribute("stdDeviation", "0," + b);
+    } });
 }
+
+},{"./grid":4,"gsap":1}],3:[function(require,module,exports){
+'use strict';
+
+var _HTMLVersion = require('./HTMLVersion');
+
+var _HTMLVersion2 = _interopRequireDefault(_HTMLVersion);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+ready(function () {
+
+  (0, _HTMLVersion2.default)();
+});
 
 function ready(fn) {
   if (document.readyState != 'loading') {
@@ -7643,7 +7661,7 @@ function ready(fn) {
   }
 }
 
-},{"./grid":3,"gsap":1}],3:[function(require,module,exports){
+},{"./HTMLVersion":2}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7684,9 +7702,9 @@ var Grid = function () {
   }, {
     key: "buildHTML",
     value: function buildHTML() {
-      var marginLeft = 200 * window.innerWidth / this.ORIGINAL_WIDTH;
-      var marginBottom = 200 * window.innerHeight / this.ORIGINAL_HEIGHT;
-      var fontSize = 120 * window.innerWidth / this.ORIGINAL_WIDTH;
+      var marginLeft = Math.round(200 * window.innerWidth / this.ORIGINAL_WIDTH);
+      var marginBottom = Math.round(200 * window.innerHeight / this.ORIGINAL_HEIGHT);
+      var fontSize = Math.round(120 * window.innerWidth / this.ORIGINAL_WIDTH);
 
       var tmpl = "<div class='grid' style='margin-left:" + marginLeft + "px; padding-top:" + marginBottom + "px'><ul>";
 
@@ -7703,7 +7721,7 @@ var Grid = function () {
         }
 
         var li = "<li style='margin-right:" + marginLeft + "px; margin-bottom:" + marginBottom + "px; font-size:" + fontSize + "px; " + clear + "'>" + num + "</li>";
-        // tmpl += li;
+        tmpl += li;
       }
 
       tmpl += "</li></div>";
@@ -7716,4 +7734,4 @@ var Grid = function () {
 
 exports.default = Grid;
 
-},{}]},{},[2]);
+},{}]},{},[3]);

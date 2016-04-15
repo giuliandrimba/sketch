@@ -23,9 +23,9 @@ export default class Grid {
   }
 
   buildHTML() {
-    var marginLeft = 200 * window.innerWidth / this.ORIGINAL_WIDTH;
-    var marginBottom = 200 * window.innerHeight / this.ORIGINAL_HEIGHT;
-    var fontSize = 120 * window.innerWidth / this.ORIGINAL_WIDTH;
+    var marginLeft = Math.round(200 * window.innerWidth / this.ORIGINAL_WIDTH);
+    var marginBottom = Math.round(200 * window.innerHeight / this.ORIGINAL_HEIGHT);
+    var fontSize = Math.round(120 * window.innerWidth / this.ORIGINAL_WIDTH);
 
     var tmpl = `<div class='grid' style='margin-left:${marginLeft}px; padding-top:${marginBottom}px'><ul>`;
 
@@ -42,7 +42,7 @@ export default class Grid {
       }
 
       let li = `<li style='margin-right:${marginLeft}px; margin-bottom:${marginBottom}px; font-size:${fontSize}px; ${clear}'>${num}</li>`
-      // tmpl += li;
+      tmpl += li;
     }
 
     tmpl += "</li></div>";
