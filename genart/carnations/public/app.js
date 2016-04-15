@@ -29790,6 +29790,7 @@ Object.defineProperty(exports, "__esModule", {
 
 exports.default = function (p) {
 
+  var canvas = undefined;
   var lines = undefined;
   var pointA = { x: 0, y: 0 };
   var pointB = { x: 0, y: 0 };
@@ -29806,7 +29807,7 @@ exports.default = function (p) {
   p.setup = function () {
     p.fullscreen(true);
     p.pixelDensity(window.devicePixelRatio);
-    p.createCanvas(window.innerWidth, window.innerHeight);
+    canvas = p.createCanvas(window.innerWidth, window.innerHeight);
     lines = p.createGraphics(window.innerWidth, window.innerHeight);
 
     size = 0;
@@ -29815,6 +29816,12 @@ exports.default = function (p) {
     radius.y = Math.random() * size;
 
     window.setTimeout(finish, 30000);
+  };
+
+  p.keyTyped = function () {
+    if (p.keyCode === 32) {
+      p.saveCanvas('carnations');
+    }
   };
 
   function finish() {

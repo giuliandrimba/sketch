@@ -1,5 +1,6 @@
 export default function(p){
 
+  var canvas = undefined
   var lines = undefined;
   var pointA = {x:0,y:0};
   var pointB = {x:0,y:0};
@@ -16,7 +17,7 @@ export default function(p){
   p.setup = function() {
     p.fullscreen(true);
     p.pixelDensity(window.devicePixelRatio);
-    p.createCanvas(window.innerWidth, window.innerHeight);
+    canvas = p.createCanvas(window.innerWidth, window.innerHeight);
     lines = p.createGraphics(window.innerWidth, window.innerHeight);
 
     size = 0;
@@ -26,6 +27,12 @@ export default function(p){
 
 
     window.setTimeout(finish, 30000)
+  }
+
+  p.keyTyped = function() {
+    if (p.keyCode === 32) {
+      p.saveCanvas('carnations');
+    }
   }
 
   function finish() {
