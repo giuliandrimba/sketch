@@ -1,12 +1,17 @@
+import moment from "moment";
+window.moment = moment;
+
 export default class Grid {
-  constructor(parent) {
+  constructor(parent, month) {
     this.parent = parent;
+    this.month = month;
     this.ORIGINAL_WIDTH = 1920;
     this.ORIGINAL_HEIGHT = 1080;
     this.TOTAL_DAYS = 15;
+    this.days = [];
 
     this.el = undefined;
-
+    this.buildDays()
     this.render()
   }
 
@@ -26,15 +31,16 @@ export default class Grid {
 
     var container = new PIXI.Container()
 
-    for(var i = 0; i < this.TOTAL_DAYS; i++) {
+    for(var i = 0; i <= this.TOTAL_DAYS; i++) {
 
-      let num = i;
+      let num = this.days[i];
 
-      if(num < 10) {
-        num = `0${i}`
+      if(parseInt(num) < 10) {
+        num = `0${num}`
       }
 
-      let text = new PIXI.Text(num,{font : `${fontSize}px Helvetica`, fill : 0xff1010});
+      let text = new PIXI.Text(num,{font : `${fontSize}px Helvetica`, fill : 0xFFFFFF});
+      text.alpha = 0.3;
       text.x = col * (marginLeft + text.width);
       text.y = row * (marginBottom + text.height);
 
@@ -50,5 +56,28 @@ export default class Grid {
     }
 
     return container;
+  }
+
+  buildDays() {
+
+    var diff = moment().month() - this.month;
+    var date = moment().subtract(14 * diff, 'days')
+
+    this.days[7] = date.date()
+
+    for(var i = 6; i > -1; i--) {
+      var a = date.clone();
+      this.days[i] = a.subtract(7 - i, 'days').date()
+    }
+
+    for(var i = 8; i < this.TOTAL_DAYS; i++) {
+      var a = date.clone();
+      this.days[i] = a.add(i - 7, 'days').date()
+    }
+  }
+
+  resize() {
+    this.el.removeChildren()
+    this.el.addChild(this.buildTexts());
   }
 }
