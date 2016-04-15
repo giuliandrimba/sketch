@@ -30,12 +30,12 @@ function animate() {
   main.style.transform = `translate3d(0,${effect.y}px, 0)`;
   effect.blur = -1;
 
-  let _y = window.innerHeight * 5;
-  TweenMax.to(effect, 2, {y:-_y, ease:Expo.easeInOut, onUpdate:function() {
-    main.style.transform = `translate3d(0,${Math.round(effect.y)}px, 0)`;
+  let _y = window.innerHeight * 9;
+  TweenMax.to(effect, 3, {y:-_y, ease:window.easingName, onUpdate:function() {
+    main.style.transform = `translate3d(0,${effect.y}px, 0)`;
   }})
-  TweenMax.to(effect, 2, { blur:1, ease:Expo.easeInOut, onUpdate:function() {
-    var b = Math.round(50 - Math.abs(effect.blur * 50))
-    blurFilter.setAttribute("stdDeviation",`0,${b}`);  
-  }})
+  // TweenMax.to(effect, 2, { blur:1, ease:window.easingName, onUpdate:function() {
+  //   var b = Math.round(50 - Math.abs(effect.blur * 50))
+  //   blurFilter.setAttribute("stdDeviation",`0,${b}`);  
+  // }})
 }

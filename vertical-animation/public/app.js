@@ -7594,6 +7594,63 @@ var _gsap = require("gsap");
 
 var _gsap2 = _interopRequireDefault(_gsap);
 
+var _grid2 = require("./canvas/grid");
+
+var _grid3 = _interopRequireDefault(_grid2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var renderer = undefined;
+var stage = undefined;
+var grid = undefined;
+var gridsContainer = undefined;
+var numGrids = 10;
+var grids = [];
+
+function init() {
+  renderer = new PIXI.WebGLRenderer(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.view);
+
+  stage = new PIXI.Container();
+  gridsContainer = new PIXI.Container();
+
+  for (var i = 0; i < numGrids; i++) {
+    var _grid = new _grid3.default(gridsContainer);
+    _grid.el.y = window.innerHeight * i;
+    grids.push(_grid);
+  }
+
+  document.body.addEventListener("mousedown", animate);
+
+  stage.addChild(gridsContainer);
+
+  loop();
+}
+
+function loop() {
+  window.requestAnimationFrame(loop);
+
+  renderer.render(stage);
+}
+
+function animate() {
+  gridsContainer.y = 0;
+  var _y = window.innerHeight * 9;
+  _gsap2.default.to(gridsContainer, 3, { y: -_y, ease: window.easingName });
+}
+
+},{"./canvas/grid":5,"gsap":1}],3:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = init;
+
+var _gsap = require("gsap");
+
+var _gsap2 = _interopRequireDefault(_gsap);
+
 var _grid = require("./grid");
 
 var _grid2 = _interopRequireDefault(_grid);
@@ -7629,28 +7686,42 @@ function animate() {
   main.style.transform = "translate3d(0," + effect.y + "px, 0)";
   effect.blur = -1;
 
-  var _y = window.innerHeight * 5;
-  _gsap2.default.to(effect, 2, { y: -_y, ease: Expo.easeInOut, onUpdate: function onUpdate() {
-      main.style.transform = "translate3d(0," + Math.round(effect.y) + "px, 0)";
+  var _y = window.innerHeight * 9;
+  _gsap2.default.to(effect, 3, { y: -_y, ease: window.easingName, onUpdate: function onUpdate() {
+      main.style.transform = "translate3d(0," + effect.y + "px, 0)";
     } });
-  _gsap2.default.to(effect, 2, { blur: 1, ease: Expo.easeInOut, onUpdate: function onUpdate() {
-      var b = Math.round(50 - Math.abs(effect.blur * 50));
-      blurFilter.setAttribute("stdDeviation", "0," + b);
-    } });
+  // TweenMax.to(effect, 2, { blur:1, ease:window.easingName, onUpdate:function() {
+  //   var b = Math.round(50 - Math.abs(effect.blur * 50))
+  //   blurFilter.setAttribute("stdDeviation",`0,${b}`); 
+  // }})
 }
 
-},{"./grid":4,"gsap":1}],3:[function(require,module,exports){
-'use strict';
+},{"./grid":6,"gsap":1}],4:[function(require,module,exports){
+"use strict";
 
-var _HTMLVersion = require('./HTMLVersion');
+var _HTMLVersion = require("./HTMLVersion");
 
 var _HTMLVersion2 = _interopRequireDefault(_HTMLVersion);
+
+var _CanvasVersion = require("./CanvasVersion");
+
+var _CanvasVersion2 = _interopRequireDefault(_CanvasVersion);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 ready(function () {
 
-  (0, _HTMLVersion2.default)();
+  if (/canvas/.test(window.location.href.toString())) {
+    (0, _CanvasVersion2.default)();
+  } else {
+    (0, _HTMLVersion2.default)();
+  }
+
+  if (/quart/.test(window.location.href.toString())) {
+    window.easingName = Quart.easeInOut;
+  } else {
+    window.easingName = Expo.easeInOut;
+  }
 });
 
 function ready(fn) {
@@ -7661,7 +7732,83 @@ function ready(fn) {
   }
 }
 
-},{"./HTMLVersion":2}],4:[function(require,module,exports){
+},{"./CanvasVersion":2,"./HTMLVersion":3}],5:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Grid = function () {
+  function Grid(parent) {
+    _classCallCheck(this, Grid);
+
+    this.parent = parent;
+    this.ORIGINAL_WIDTH = 1920;
+    this.ORIGINAL_HEIGHT = 1080;
+    this.TOTAL_DAYS = 15;
+
+    this.el = undefined;
+
+    this.render();
+  }
+
+  _createClass(Grid, [{
+    key: "render",
+    value: function render() {
+      this.el = new PIXI.Container();
+      this.el.addChild(this.buildTexts());
+      this.parent.addChild(this.el);
+    }
+  }, {
+    key: "buildTexts",
+    value: function buildTexts() {
+      var marginLeft = Math.round(200 * window.innerWidth / this.ORIGINAL_WIDTH);
+      var marginBottom = Math.round(200 * window.innerHeight / this.ORIGINAL_HEIGHT);
+      var fontSize = Math.round(120 * window.innerWidth / this.ORIGINAL_WIDTH);
+
+      var col = 0;
+      var row = 0;
+
+      var container = new PIXI.Container();
+
+      for (var i = 0; i < this.TOTAL_DAYS; i++) {
+
+        var num = i;
+
+        if (num < 10) {
+          num = "0" + i;
+        }
+
+        var text = new PIXI.Text(num, { font: fontSize + "px Helvetica", fill: 0xff1010 });
+        text.x = col * (marginLeft + text.width);
+        text.y = row * (marginBottom + text.height);
+
+        col++;
+        if (col > 4) {
+          col = 0;
+          row++;
+        }
+
+        container.y = window.innerHeight / 2 - container.height / 2;
+        container.x = window.innerWidth / 2 - container.width / 2;
+        container.addChild(text);
+      }
+
+      return container;
+    }
+  }]);
+
+  return Grid;
+}();
+
+exports.default = Grid;
+
+},{}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7734,4 +7881,4 @@ var Grid = function () {
 
 exports.default = Grid;
 
-},{}]},{},[3]);
+},{}]},{},[4]);
