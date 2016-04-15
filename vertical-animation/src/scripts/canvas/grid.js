@@ -9,6 +9,9 @@ export default class Grid {
     this.ORIGINAL_HEIGHT = 1080;
     this.TOTAL_DAYS = 15;
     this.days = [];
+    this.texts = []
+    this.textsContainer = undefined;
+    this.mask = undefined;
 
     this.el = undefined;
     this.buildDays()
@@ -17,8 +20,21 @@ export default class Grid {
 
   render() {
     this.el = new PIXI.Container()
-    this.el.addChild(this.buildTexts());
+    this.mask = this.buildMask()
+    this.textsContainer = this.buildTexts()
+    this.el.addChild(this.textsContainer);
+    this.el.addChild(this.mask);
+    this.textsContainer.mask = this.mask;
     this.parent.addChild(this.el);
+  }
+
+  animate() {
+    if(moment().month() === this.month){
+      for(var i = 0; i < this.texts.length; i++) {
+        this.texts[i].y = this.texts[i]._y2
+        TweenMax.to(this.texts[i], 3, {y:this.texts[i]._y, ease:Quart.easeInOut, delay:this.texts[i]._delay * 0.1})
+      }
+    }
   }
 
   buildTexts() {
@@ -42,7 +58,14 @@ export default class Grid {
       let text = new PIXI.Text(num,{font : `${fontSize}px Helvetica`, fill : 0xFFFFFF});
       text.alpha = 0.3;
       text.x = col * (marginLeft + text.width);
-      text.y = row * (marginBottom + text.height);
+      if(moment().month() === this.month){
+        text._y = row * (marginBottom + text.height);
+        text._y2 = text._y + (marginBottom * row * 2)
+        text._delay = row;
+        text.y = text._y
+      } else {
+        text.y = row * (marginBottom + text.height);
+      }
 
       col++;
       if(col > 4) {
@@ -53,6 +76,7 @@ export default class Grid {
       container.y = window.innerHeight / 2 - container.height / 2
       container.x = window.innerWidth / 2 - container.width / 2
       container.addChild(text);
+      this.texts.push(text);
     }
 
     return container;
@@ -76,7 +100,16 @@ export default class Grid {
     }
   }
 
+  buildMask() {
+    var mask = new PIXI.Graphics()
+    mask.beginFill(0xFF0000)
+    mask.drawRect(0,0,window.innerWidth, window.innerHeight)
+    mask.endFill()
+    return mask;
+  }
+
   resize() {
+    this.texts = [];
     this.el.removeChildren()
     this.el.addChild(this.buildTexts());
   }

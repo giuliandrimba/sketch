@@ -45,6 +45,9 @@ function animate() {
   gridsContainer.y = 0;
   let _y = window.innerHeight * moment().month()
   TweenMax.to(gridsContainer, 3, {y:- _y, ease:Quart.easeInOut});
+  for(var i = 0; i < numGrids; i++) {
+    grids[i].animate();
+  }
 }
 
 function resize() {

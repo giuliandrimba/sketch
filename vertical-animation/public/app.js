@@ -11335,6 +11335,9 @@ function animate() {
   gridsContainer.y = 0;
   var _y = window.innerHeight * (0, _moment2.default)().month();
   _gsap2.default.to(gridsContainer, 3, { y: -_y, ease: Quart.easeInOut });
+  for (var i = 0; i < numGrids; i++) {
+    grids[i].animate();
+  }
 }
 
 function resize() {
@@ -11453,6 +11456,9 @@ var Grid = function () {
     this.ORIGINAL_HEIGHT = 1080;
     this.TOTAL_DAYS = 15;
     this.days = [];
+    this.texts = [];
+    this.textsContainer = undefined;
+    this.mask = undefined;
 
     this.el = undefined;
     this.buildDays();
@@ -11463,8 +11469,22 @@ var Grid = function () {
     key: 'render',
     value: function render() {
       this.el = new PIXI.Container();
-      this.el.addChild(this.buildTexts());
+      this.mask = this.buildMask();
+      this.textsContainer = this.buildTexts();
+      this.el.addChild(this.textsContainer);
+      this.el.addChild(this.mask);
+      this.textsContainer.mask = this.mask;
       this.parent.addChild(this.el);
+    }
+  }, {
+    key: 'animate',
+    value: function animate() {
+      if ((0, _moment2.default)().month() === this.month) {
+        for (var i = 0; i < this.texts.length; i++) {
+          this.texts[i].y = this.texts[i]._y2;
+          TweenMax.to(this.texts[i], 3, { y: this.texts[i]._y, ease: Quart.easeInOut, delay: this.texts[i]._delay * 0.1 });
+        }
+      }
     }
   }, {
     key: 'buildTexts',
@@ -11489,7 +11509,14 @@ var Grid = function () {
         var text = new PIXI.Text(num, { font: fontSize + 'px Helvetica', fill: 0xFFFFFF });
         text.alpha = 0.3;
         text.x = col * (marginLeft + text.width);
-        text.y = row * (marginBottom + text.height);
+        if ((0, _moment2.default)().month() === this.month) {
+          text._y = row * (marginBottom + text.height);
+          text._y2 = text._y + marginBottom * row * 2;
+          text._delay = row;
+          text.y = text._y;
+        } else {
+          text.y = row * (marginBottom + text.height);
+        }
 
         col++;
         if (col > 4) {
@@ -11500,6 +11527,7 @@ var Grid = function () {
         container.y = window.innerHeight / 2 - container.height / 2;
         container.x = window.innerWidth / 2 - container.width / 2;
         container.addChild(text);
+        this.texts.push(text);
       }
 
       return container;
@@ -11524,8 +11552,18 @@ var Grid = function () {
       }
     }
   }, {
+    key: 'buildMask',
+    value: function buildMask() {
+      var mask = new PIXI.Graphics();
+      mask.beginFill(0xFF0000);
+      mask.drawRect(0, 0, window.innerWidth, window.innerHeight);
+      mask.endFill();
+      return mask;
+    }
+  }, {
     key: 'resize',
     value: function resize() {
+      this.texts = [];
       this.el.removeChildren();
       this.el.addChild(this.buildTexts());
     }
