@@ -1,6 +1,7 @@
 import TweenMax from "gsap";
 import moment from "moment";
 import Grid from "./canvas/grid";
+import _ from "lodash";
 
 var renderer = undefined;
 var stage = undefined;
@@ -13,10 +14,8 @@ var grids = [];
 
 export default function init() {
 
-  renderer = new PIXI.WebGLRenderer(window.innerWidth, window.innerHeight);
+  renderer = new PIXI.WebGLRenderer(window.innerWidth, window.innerHeight, {antialias: true});
   document.body.appendChild(renderer.view);
-
-  console.log(moment().month(3).daysInMonth())
 
   stage = new PIXI.Container();
   gridsContainer = new PIXI.Container;
@@ -43,7 +42,7 @@ function loop() {
 
 function animate() {
   gridsContainer.y = 0;
-  let _y = window.innerHeight * moment().month()
+  let _y = window.innerHeight * moment().month();
   TweenMax.to(gridsContainer, 3, {y:- _y, ease:Quart.easeInOut});
   for(var i = 0; i < numGrids; i++) {
     grids[i].animate();

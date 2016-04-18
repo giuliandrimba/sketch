@@ -1,5 +1,7 @@
 import moment from "moment";
 window.moment = moment;
+import Caleido from "./caleido";
+import _ from "lodash";
 
 export default class Grid {
   constructor(parent, month) {
@@ -12,10 +14,14 @@ export default class Grid {
     this.texts = []
     this.textsContainer = undefined;
     this.mask = undefined;
+    this.caleido = undefined;
 
     this.el = undefined;
     this.buildDays()
     this.render()
+    if(moment().month() === this.month) {
+      this.addCaleido()
+    }
   }
 
   render() {
@@ -30,11 +36,25 @@ export default class Grid {
 
   animate() {
     if(moment().month() === this.month){
+      this.caleido.reset()
       for(var i = 0; i < this.texts.length; i++) {
         this.texts[i].y = this.texts[i]._y2
         TweenMax.to(this.texts[i], 3, {y:this.texts[i]._y, ease:Quart.easeInOut, delay:this.texts[i]._delay * 0.1})
       }
+
+      _.delay(this.showCaleido.bind(this), 3000)
     }
+  }
+
+  showCaleido() {
+    this.caleido.show();
+  }
+
+  addCaleido() {
+    this.caleido = new Caleido;
+    this.textsContainer.addChild(this.caleido.el);
+    this.caleido.el.x = this.texts[7].x + (this.texts[7].width / 2)
+    this.caleido.el.y = this.texts[7].y + (this.texts[7].height / 2)
   }
 
   buildTexts() {
@@ -111,6 +131,11 @@ export default class Grid {
   resize() {
     this.texts = [];
     this.el.removeChildren()
-    this.el.addChild(this.buildTexts());
+    this.textsContainer = this.buildTexts()
+    this.el.addChild(this.textsContainer);
+
+    if(moment().month() === this.month) {
+      this.addCaleido()
+    }
   }
 }
