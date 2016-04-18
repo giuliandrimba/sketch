@@ -1,9 +1,11 @@
 export default class Caleido {
-  constructor() {
+  constructor(date) {
+    this.date = date;
     this.el = new PIXI.Container();
     this.firstBorders = [];
     this.secondBorders = [];
     this.thirdBorders = [];
+    this.text = undefined;
     this.resize();
     this.build();
   }
@@ -17,13 +19,20 @@ export default class Caleido {
   }
 
   buildPattern(total) {
+    var fontSize = Math.round(120 * window.innerWidth / 1920);
     this.pattern = new PIXI.Container();
+    this.text = new PIXI.Text(this.date,{font : `${fontSize}px Helvetica`, fill : 0x000000});
+    this.text.alpha = 0;
+    this.text.x = -this.text.width / 2;
+    this.text.y = -this.text.width / 2;
     this.circle = this.buildCircle();
+
     this.pattern.addChild(this.circle);
     this.buildFirstBorder()
     this.buildSecondBorder()
     this.buildThirdBorder()
     this.circle.scale.x = this.circle.scale.y = 0
+    this.pattern.addChild(this.text)
 
     return this.pattern;
   }
@@ -286,6 +295,7 @@ export default class Caleido {
 
   show() {
     TweenMax.to(this.circle.scale, 2,{x:1,y:1, ease:Expo.easeInOut});
+    TweenMax.to(this.text, 1,{alpha:1, ease:Expo.easeInOut, delay:0.5});
 
     for(var f = 0; f < this.firstBorders.length; f++) {
       let border = this.firstBorders[f];

@@ -51,7 +51,7 @@ export default class Grid {
   }
 
   addCaleido() {
-    this.caleido = new Caleido;
+    this.caleido = new Caleido(moment().date());
     this.textsContainer.addChild(this.caleido.el);
     this.caleido.el.x = this.texts[7].x + (this.texts[7].width / 2)
     this.caleido.el.y = this.texts[7].y + (this.texts[7].height / 2)
