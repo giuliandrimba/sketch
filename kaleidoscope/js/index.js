@@ -1,5 +1,5 @@
 (function() {
-  var DragDrop, Kaleidoscope, c, dragger, gui, i, image, kaleidoscope, len, onChange, onMouseMoved, options, ref, tr, tx, ty, update,
+  var DragDrop, Kaleidoscope, c, dragger, gui, i, image, kaleidoscope, len, onChange, onMouseMoved, options, ref, textures, tr, tx, ty, update,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   Kaleidoscope = (function() {
@@ -172,7 +172,7 @@
   (update = (function(_this) {
     return function() {
       var delta, theta;
-      if (options.interactive) {
+      if (true) {
         delta = tr - kaleidoscope.offsetRotation;
         theta = Math.atan2(Math.sin(delta), Math.cos(delta));
         kaleidoscope.offsetX += (tx - kaleidoscope.offsetX) * options.ease;
@@ -184,23 +184,35 @@
     };
   })(this))();
 
+  textures = {
+    texture1: function() {
+      return kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T1.jpg';
+    },
+    texture2: function() {
+      return kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T2.jpg';
+    },
+    texture3: function() {
+      return kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T3.jpg';
+    },
+    texture4: function() {
+      return kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T5.jpg';
+    },
+    texture5: function() {
+      return kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T8.jpg';
+    }
+  };
+
   gui = new dat.GUI;
 
-  gui.add(kaleidoscope, 'zoom').min(0.25).max(2.0);
+  gui.add(textures, 'texture1');
 
-  gui.add(kaleidoscope, 'slices').min(6).max(32).step(2);
+  gui.add(textures, 'texture2');
 
-  gui.add(kaleidoscope, 'radius').min(200).max(500);
+  gui.add(textures, 'texture3');
 
-  gui.add(kaleidoscope, 'offsetX').min(-kaleidoscope.radius).max(kaleidoscope.radius).listen();
+  gui.add(textures, 'texture4');
 
-  gui.add(kaleidoscope, 'offsetY').min(-kaleidoscope.radius).max(kaleidoscope.radius).listen();
-
-  gui.add(kaleidoscope, 'offsetRotation').min(-Math.PI).max(Math.PI).listen();
-
-  gui.add(kaleidoscope, 'offsetScale').min(0.5).max(4.0);
-
-  gui.add(options, 'interactive').listen();
+  gui.add(textures, 'texture5');
 
   gui.close();
 
