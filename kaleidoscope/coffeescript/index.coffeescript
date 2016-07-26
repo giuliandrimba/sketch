@@ -87,7 +87,7 @@ class DragDrop
   
 image = new Image
 image.onload = => do kaleidoscope.draw
-image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T7.jpg'
+image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T1.jpg'
 
 kaleidoscope = new Kaleidoscope
   image: image
@@ -152,14 +152,19 @@ do update = =>
 
 textures =
   texture1:()->
+    $("html, body").css("background-color", "#dfeac7")
     kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T1.jpg'
   texture2: ()->
+    $("html, body").css("background-color", "#b1cce9")
     kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T2.jpg'
   texture3: ()->
+    $("html, body").css("background-color", "#c1d8cf")
     kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T3.jpg'
   texture4: ()->
+    $("html, body").css("background-color", "#b8bcd8")
     kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T5.jpg'
   texture5: ()->
+    $("html, body").css("background-color", "#e7d9ad")
     kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T8.jpg'
 
 gui = new dat.GUI

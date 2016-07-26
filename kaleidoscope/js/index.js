@@ -118,7 +118,7 @@
     };
   })(this);
 
-  image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T7.jpg';
+  image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T1.jpg';
 
   kaleidoscope = new Kaleidoscope({
     image: image,
@@ -186,18 +186,23 @@
 
   textures = {
     texture1: function() {
+      $("html, body").css("background-color", "#dfeac7");
       return kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T1.jpg';
     },
     texture2: function() {
+      $("html, body").css("background-color", "#b1cce9");
       return kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T2.jpg';
     },
     texture3: function() {
+      $("html, body").css("background-color", "#c1d8cf");
       return kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T3.jpg';
     },
     texture4: function() {
+      $("html, body").css("background-color", "#b8bcd8");
       return kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T5.jpg';
     },
     texture5: function() {
+      $("html, body").css("background-color", "#e7d9ad");
       return kaleidoscope.image.src = 'https://dl.dropboxusercontent.com/u/4789686/Textures/T8.jpg';
     }
   };
