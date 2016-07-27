@@ -13,7 +13,7 @@ class Kaleidoscope
       offsetScale: 1.0
       offsetX: 0.0
       offsetY: 0.0
-      radius: window.innerWidth * 0.4
+      radius: 256
       slices: 12
       zoom: 1.0
         
