@@ -15,7 +15,7 @@
         offsetScale: 1.0,
         offsetX: 0.0,
         offsetY: 0.0,
-        radius: 260,
+        radius: 256,
         slices: 12,
         zoom: 1.0
       };
