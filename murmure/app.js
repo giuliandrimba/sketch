@@ -44473,7 +44473,7 @@ var App = function () {
     key: 'events',
     value: function events() {
       window.addEventListener("resize", this.resize.bind(this));
-      document.body.addEventListener("dblclick", this.takeScreenshot.bind(this));
+      // document.body.addEventListener("dblclick", this.takeScreenshot.bind(this));
     }
   }, {
     key: 'render',
