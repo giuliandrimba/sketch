@@ -52393,6 +52393,7 @@ var App = function () {
       this.offsetX = (e.clientX - window.innerWidth / 2) * 0.001;
       this.offsetY = (e.clientY - window.innerHeight / 2) * 0.001;
       this.mouseDist = Math.sqrt(this.offsetX * this.offsetX + this.offsetY * this.offsetY);
+      this.mouseDist = Math.min(0.7, this.mouseDist);
     }
   }, {
     key: "render",
@@ -52405,7 +52406,7 @@ var App = function () {
           this.tubes[i].material.uniforms.time.value += 0.001 + Math.abs(this.mouseDist) * 0.01;
           var d = this.tubes[i].material.uniforms.index.value;
           TweenMax.to(this.tubes[i].position, 0.5, { x: this.offsetX * d, y: -this.offsetY * d, delay: d * 1, ease: Quart.easeOut });
-          TweenMax.to(this.tubes[i].position, 0.75, { z: this.mouseDist * count * 0.022, delay: d * 0.05, ease: Quart.easeOut });
+          TweenMax.to(this.tubes[i].position, 0.75, { z: this.mouseDist * count * 0.02, delay: d * 0.5, ease: Quart.easeOut });
         } else {
           this.tubes[i].material.uniforms.time.value = this.api.rotation;
         }
