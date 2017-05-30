@@ -52271,6 +52271,8 @@ var App = function () {
     this.renderer.sortObjects = false;
     this.interactive = false;
     this.offsetX = 0;
+    this.mouseDist = 0;
+    this.rotationSpeed = 0.01;
     // this.renderer.setClearColor( 0xffffff );
     if (this.isInteractive()) {
       this.interactive = true;
@@ -52312,6 +52314,7 @@ var App = function () {
         color: { value: new THREE.Color(0xeeeeee) },
         thickness: { type: 'f', value: 0.0001 },
         index: { type: 'f', value: 0.0 },
+        zOffset: { type: 'f', value: 0.0 },
         time: { type: 'f', value: 0 },
         radialSegments: { type: 'f', value: this.numSides }
       }
@@ -52346,6 +52349,7 @@ var App = function () {
   }, {
     key: "createTubes",
     value: function createTubes() {
+      var count = this.totalTubes - 1;
       for (var i = 0; i < this.totalTubes; i++) {
         var t = this.totalTubes <= 1 ? 0 : i / (this.totalTubes - 1);
         var material = this.material.clone();
@@ -52353,10 +52357,16 @@ var App = function () {
         material.uniforms.index.value = t;
         material.uniforms.thickness.value = Math.random() * 0.0001;
         material.uniforms.time.value = 1.5;
+        if (i < 20) {
+          material.uniforms.zOffset.value = -count * (10 - i * 2) * 0.01;
+        } else {
+          material.uniforms.zOffset.value = count * (10 + i * 2) * 0.1;;
+        }
         var mesh = new THREE.Mesh(this.geometry, material);
         mesh.frustumCulled = false; // to avoid ThreeJS errors
         this.tubes.push(mesh);
         this.scene.add(mesh);
+        count--;
       }
     }
   }, {
@@ -52364,27 +52374,42 @@ var App = function () {
     value: function events() {
       window.addEventListener("resize", this.resize.bind(this));
       document.body.addEventListener("mousemove", this.mouseMove.bind(this));
+      document.body.addEventListener("mousedown", this.mousedown.bind(this));
+      document.body.addEventListener("mouseup", this.mouseup.bind(this));
+    }
+  }, {
+    key: "mousedown",
+    value: function mousedown() {
+      this.clicked = true;
+    }
+  }, {
+    key: "mouseup",
+    value: function mouseup() {
+      this.clicked = false;
     }
   }, {
     key: "mouseMove",
     value: function mouseMove(e) {
       this.offsetX = (e.clientX - window.innerWidth / 2) * 0.001;
       this.offsetY = (e.clientY - window.innerHeight / 2) * 0.001;
-      console.log(this.offsetX);
+      this.mouseDist = Math.sqrt(this.offsetX * this.offsetX + this.offsetY * this.offsetY);
     }
   }, {
     key: "render",
     value: function render() {
       window.requestAnimationFrame(this.render.bind(this));
+      var count = this.totalTubes - 1;
+      var middle = Math.abs(this.totalTubes / 2);
       for (var i = 0; i < this.totalTubes; i++) {
         if (this.interactive) {
-          this.tubes[i].material.uniforms.time.value += Math.abs(this.offsetX) * 0.01;
+          this.tubes[i].material.uniforms.time.value += 0.001 + Math.abs(this.mouseDist) * 0.01;
           var d = this.tubes[i].material.uniforms.index.value;
-          TweenMax.to(this.tubes[i].position, 0.5, { x: this.offsetX * d, y: -this.offsetY * d, delay: d * 0.5 });
-          TweenMax.to(this.tubes[i].position, 0.75, { z: (Math.abs(this.offsetX) + Math.abs(this.offsetY)) * 0.6, delay: d * 1 });
+          TweenMax.to(this.tubes[i].position, 0.5, { x: this.offsetX * d, y: -this.offsetY * d, delay: d * 1, ease: Quart.easeOut });
+          TweenMax.to(this.tubes[i].position, 0.75, { z: this.mouseDist * count * 0.022, delay: d * 0.05, ease: Quart.easeOut });
         } else {
           this.tubes[i].material.uniforms.time.value = this.api.rotation;
         }
+        count--;
       }
       this.renderer.render(this.scene, this.camera);
     }
