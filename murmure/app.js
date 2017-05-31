@@ -1,4 +1,24 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*
+CSS Browser Selector 0.6.5
+Originally written by Rafael Lima (http://rafael.adm.br)
+http://rafael.adm.br/css_browser_selector
+License: http://creativecommons.org/licenses/by/2.5/
+
+Co-maintained by:
+https://github.com/verbatim/css_browser_selector
+*/
+showLog=false;function log(m){if(window.console&&showLog)console.log(m)}
+function css_browser_selector(u){var uaInfo={},screens=[320,480,640,768,1024,1152,1280,1440,1680,1920,2560],allScreens=screens.length,ua=u.toLowerCase(),is=function(t){return RegExp(t,"i").test(ua)},version=function(p,n){n=n.replace(".","_");var i=n.indexOf("_"),ver="";while(i>0){ver+=" "+p+n.substring(0,i);i=n.indexOf("_",i+1)}ver+=" "+p+n;return ver},g="gecko",w="webkit",c="chrome",f="firefox",s="safari",o="opera",m="mobile",a="android",bb="blackberry",lang="lang_",dv="device_",html=document.documentElement,
+b=[!/opera|webtv/i.test(ua)&&/msie\s(\d+)/.test(ua)||/trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/.test(ua)?"ie ie"+(/trident\/4\.0/.test(ua)?"8":RegExp.$1=="11.0"?"11":RegExp.$1):is("firefox/")?g+" "+f+(/firefox\/((\d+)(\.(\d+))(\.\d+)*)/.test(ua)?" "+f+RegExp.$2+" "+f+RegExp.$2+"_"+RegExp.$4:""):is("gecko/")?g:is("opera")?o+(/version\/((\d+)(\.(\d+))(\.\d+)*)/.test(ua)?" "+o+RegExp.$2+" "+o+RegExp.$2+"_"+RegExp.$4:/opera(\s|\/)(\d+)\.(\d+)/.test(ua)?" "+o+RegExp.$2+" "+o+RegExp.$2+"_"+RegExp.$3:""):is("konqueror")?
+"konqueror":is("blackberry")?bb+(/Version\/(\d+)(\.(\d+)+)/i.test(ua)?" "+bb+RegExp.$1+" "+bb+RegExp.$1+RegExp.$2.replace(".","_"):/Blackberry ?(([0-9]+)([a-z]?))[\/|;]/gi.test(ua)?" "+bb+RegExp.$2+(RegExp.$3?" "+bb+RegExp.$2+RegExp.$3:""):""):is("android")?a+(/Version\/(\d+)(\.(\d+))+/i.test(ua)?" "+a+RegExp.$1+" "+a+RegExp.$1+RegExp.$2.replace(".","_"):"")+(/Android (.+); (.+) Build/i.test(ua)?" "+dv+RegExp.$2.replace(/ /g,"_").replace(/-/g,"_"):""):is("chrome")?w+" "+c+(/chrome\/((\d+)(\.(\d+))(\.\d+)*)/.test(ua)?
+" "+c+RegExp.$2+(RegExp.$4>0?" "+c+RegExp.$2+"_"+RegExp.$4:""):""):is("iron")?w+" iron":is("applewebkit/")?w+" "+s+(/version\/((\d+)(\.(\d+))(\.\d+)*)/.test(ua)?" "+s+RegExp.$2+" "+s+RegExp.$2+RegExp.$3.replace(".","_"):/ Safari\/(\d+)/i.test(ua)?RegExp.$1=="419"||(RegExp.$1=="417"||(RegExp.$1=="416"||RegExp.$1=="412"))?" "+s+"2_0":RegExp.$1=="312"?" "+s+"1_3":RegExp.$1=="125"?" "+s+"1_2":RegExp.$1=="85"?" "+s+"1_0":"":""):is("mozilla/")?g:"",is("android|mobi|mobile|j2me|iphone|ipod|ipad|blackberry|playbook|kindle|silk")?
+m:"",is("j2me")?"j2me":is("ipad|ipod|iphone")?(/CPU( iPhone)? OS (\d+[_|\.]\d+([_|\.]\d+)*)/i.test(ua)?"ios"+version("ios",RegExp.$2):"")+" "+(/(ip(ad|od|hone))/gi.test(ua)?RegExp.$1:""):is("playbook")?"playbook":is("kindle|silk")?"kindle":is("playbook")?"playbook":is("mac")?"mac"+(/mac os x ((\d+)[.|_](\d+))/.test(ua)?" mac"+RegExp.$2+" mac"+RegExp.$1.replace(".","_"):""):is("win")?"win"+(is("windows nt 6.2")?" win8":is("windows nt 6.1")?" win7":is("windows nt 6.0")?" vista":is("windows nt 5.2")||
+is("windows nt 5.1")?" win_xp":is("windows nt 5.0")?" win_2k":is("windows nt 4.0")||is("WinNT4.0")?" win_nt":""):is("freebsd")?"freebsd":is("x11|linux")?"linux":"",/[; |\[](([a-z]{2})(\-[a-z]{2})?)[)|;|\]]/i.test(ua)?(lang+RegExp.$2).replace("-","_")+(RegExp.$3!=""?(" "+lang+RegExp.$1).replace("-","_"):""):"",is("ipad|iphone|ipod")&&!is("safari")?"ipad_app":""];function screenSize(){var w=window.outerWidth||html.clientWidth;var h=window.outerHeight||html.clientHeight;uaInfo.orientation=
+w<h?"portrait":"landscape";html.className=html.className.replace(/ ?orientation_\w+/g,"").replace(/ [min|max|cl]+[w|h]_\d+/g,"");for(var i=allScreens-1;i>=0;i--)if(w>=screens[i]){uaInfo.maxw=screens[i];break}widthClasses="";for(var info in uaInfo)widthClasses+=" "+info+"_"+uaInfo[info];html.className=html.className+widthClasses;return widthClasses}window.onresize=screenSize;screenSize();function retina(){var r=window.devicePixelRatio>1;if(r)html.className+=" retina";else html.className+=" non-retina"}
+retina();var cssbs=b.join(" ")+" js ";html.className=(cssbs+html.className.replace(/\b(no[-|_]?)?js\b/g,"")).replace(/^ /,"").replace(/ +/g," ");return cssbs}css_browser_selector(navigator.userAgent);
+
+},{}],2:[function(require,module,exports){
 module.exports = function(strings) {
   if (typeof strings === 'string') strings = [strings]
   var exprs = [].slice.call(arguments,1)
@@ -10,7 +30,7 @@ module.exports = function(strings) {
   return parts.join('')
 }
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 (function (global){
 /*!
  * VERSION: 1.19.1
@@ -7870,7 +7890,7 @@ if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); } //necessary in case Tween
 
 })((typeof(module) !== "undefined" && module.exports && typeof(global) !== "undefined") ? global : this || window, "TweenMax");
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 module.exports = function( THREE ) {
 	/**
 	 * @author qiao / https://github.com/qiao
@@ -8892,7 +8912,7 @@ module.exports = function( THREE ) {
 	return OrbitControls;
 };
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -52238,7 +52258,7 @@ module.exports = function( THREE ) {
 
 })));
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -52246,6 +52266,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 require("gsap");
+require("css-browser-selector");
 window.THREE = require("three");
 var glslify = require('glslify');
 var OrbitControls = require('three-orbit-controls')(THREE);
@@ -52386,9 +52407,18 @@ var App = function () {
     value: function events() {
       window.addEventListener("resize", this.resize.bind(this));
       document.body.addEventListener("mousemove", this.mouseMove.bind(this));
-      document.body.addEventListener("touchmove", this.touchMove.bind(this));
+      this.renderer.domElement.addEventListener("touchmove", this.touchMove.bind(this));
       document.body.addEventListener("mousedown", this.mousedown.bind(this));
       document.body.addEventListener("mouseup", this.mouseup.bind(this));
+      window.addEventListener('resize', this.onWindowResize.bind(this), false);
+    }
+  }, {
+    key: "onWindowResize",
+    value: function onWindowResize() {
+      this.camera.aspect = window.innerWidth / window.innerHeight;
+      this.camera.updateProjectionMatrix();
+
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
   }, {
     key: "mousedown",
@@ -52405,10 +52435,11 @@ var App = function () {
   }, {
     key: "touchMove",
     value: function touchMove(e) {
-      this.offsetX = (e.touches[0].pageX - window.innerWidth / 2) * 0.001;
-      this.offsetY = (e.touches[0].pageY - window.innerHeight / 2) * 0.001;
+      e.preventDefault();
+      this.offsetX = (e.touches[0].pageX - window.innerWidth / 2) * 0.01;
+      this.offsetY = (e.touches[0].pageY - window.innerHeight / 2) * 0.01;
       this.mouseDist = Math.sqrt(this.offsetX * this.offsetX + this.offsetY * this.offsetY);
-      this.mouseDist = Math.min(1, this.mouseDist);
+      this.mouseDist = Math.min(0.5, this.mouseDist);
     }
   }, {
     key: "mouseMove",
@@ -52508,7 +52539,7 @@ var App = function () {
 
 new App();
 
-},{"./three/createTubeGeometry":6,"glslify":1,"gsap":2,"three":4,"three-orbit-controls":3}],6:[function(require,module,exports){
+},{"./three/createTubeGeometry":7,"css-browser-selector":1,"glslify":2,"gsap":3,"three":5,"three-orbit-controls":4}],7:[function(require,module,exports){
 'use strict';
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
@@ -52588,4 +52619,4 @@ function createLineGeometry() {
   return geometry;
 }
 
-},{}]},{},[5]);
+},{}]},{},[6]);
