@@ -52285,7 +52285,7 @@ var App = function () {
     this.screenshotCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true, antialias: true, premultipliedAlpha: true });
     this.downloadRenderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true, premultipliedAlpha: true });
-    this.downloadRenderer.setSize(8000, 8000);
+    this.downloadRenderer.setSize(2250, 7000);
     this.renderer.gammaFactor = 2.2;
     this.renderer.gammaOutput = true;
     this.renderer.gammaInput = true;
@@ -52488,45 +52488,42 @@ var App = function () {
       }, 0);
       setTimeout(function () {
         takePart(1);
-      }, 1000);
-      setTimeout(function () {
-        takePart(2);
-      }, 2000);
-      setTimeout(function () {
-        takePart(3);
       }, 3000);
       setTimeout(function () {
-        takePart(4);
-      }, 4000);
-      setTimeout(function () {
-        takePart(5);
-      }, 5000);
-      setTimeout(function () {
-        takePart(6);
+        takePart(2);
       }, 6000);
       setTimeout(function () {
-        takePart(7);
-      }, 7000);
+        takePart(3);
+      }, 9000);
       setTimeout(function () {
-        takePart(8);
-      }, 8000);
+        takePart(4);
+      }, 12000);
+      setTimeout(function () {
+        takePart(5);
+      }, 15000);
+      setTimeout(function () {
+        takePart(6);
+      }, 18000);
+      setTimeout(function () {
+        takePart(7);
+      }, 21000);
 
       var that = this;
       var col = 0;
       var row = 0;
 
       function takePart(i) {
-        if (col >= 3) {
+        if (col >= 2) {
           col = 0;
           row++;
         }
-        that.downloadRenderer.setSize(2500, 2500);
-        that.screenshotCamera.setViewOffset(8000, 8000, 2500 * col, row * 2500, 2500, 2500);
+        that.downloadRenderer.setSize(2250, 1750);
+        that.screenshotCamera.setViewOffset(4500, 7000, 2250 * col, row * 1750, 2250, 1750);
         that.downloadRenderer.render(that.scene, that.screenshotCamera);
         var image = that.downloadRenderer.domElement.toDataURL("image/png");
         var a = document.createElement('a');
         a.href = image;
-        a.download = i + "test.png";
+        a.download = "part" + i + ".png";
         a.click();
 
         col++;
