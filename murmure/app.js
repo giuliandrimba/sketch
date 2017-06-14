@@ -52304,19 +52304,9 @@ var App = function () {
 
     this.camera.position.set(0, 0, 0.7);
     this.screenshotCamera.position.set(0, 0, 0.7);
-    var controls = new OrbitControls(this.camera, this.renderer.domElement);
 
-    if (this.isInteractive()) {
-      controls.enablePan = false;
-      controls.enableKeys = false;
-      controls.enableRotate = false;
-      controls.maxDistance = 1;
-      controls.minDistance = 0.5;
-      controls.maxPolarAngle = Math.PI / 2;
-      controls.maxAzimuthAngle = Math.PI / 2; // radians
-      controls.rotateSpeed = 0.1;
-      // controls.enableRotate = false;
-    } else {
+    if (this.isInteractive()) {} else {
+      var controls = new OrbitControls(this.camera, this.renderer.domElement);
       var controls2 = new OrbitControls(this.screenshotCamera, this.renderer.domElement);
     }
 
@@ -52438,6 +52428,21 @@ var App = function () {
       e.preventDefault();
       this.offsetX = (e.touches[0].pageX - window.innerWidth / 2) * 0.01;
       this.offsetY = (e.touches[0].pageY - window.innerHeight / 2) * 0.01;
+      this.rotationX = (e.clientX - window.innerWidth / 2) * 0.01;
+      this.rotationY = (e.clientY - window.innerHeight / 2) * 0.01;
+
+      if (this.rotationX >= 0) {
+        this.rotationX = Math.min(5, this.rotationX);
+      } else {
+        this.rotationX = Math.max(-5, this.rotationX);
+      }
+
+      if (this.rotationY >= 0) {
+        this.rotationY = Math.min(5, this.rotationY);
+      } else {
+        this.rotationY = Math.max(-5, this.rotationY);
+      }
+
       this.mouseDist = Math.sqrt(this.offsetX * this.offsetX + this.offsetY * this.offsetY);
       this.mouseDist = Math.min(0.5, this.mouseDist);
     }
@@ -52446,8 +52451,23 @@ var App = function () {
     value: function mouseMove(e) {
       this.offsetX = (e.clientX - window.innerWidth / 2) * 0.001;
       this.offsetY = (e.clientY - window.innerHeight / 2) * 0.001;
+      this.rotationX = (e.clientX - window.innerWidth / 2) * 0.01;
+      this.rotationY = (e.clientY - window.innerHeight / 2) * 0.01;
+      if (this.rotationX >= 0) {
+        this.rotationX = Math.min(5, this.rotationX);
+      } else {
+        this.rotationX = Math.max(-5, this.rotationX);
+      }
+
+      if (this.rotationY >= 0) {
+        this.rotationY = Math.min(5, this.rotationY);
+      } else {
+        this.rotationY = Math.max(-5, this.rotationY);
+      }
+
       this.mouseDist = Math.sqrt(this.offsetX * this.offsetX + this.offsetY * this.offsetY);
       this.mouseDist = Math.min(0.7, this.mouseDist);
+      console.log(this.rotationX);
     }
   }, {
     key: "render",
@@ -52459,7 +52479,8 @@ var App = function () {
         if (this.interactive) {
           this.tubes[i].material.uniforms.time.value += 0.001 + Math.abs(this.mouseDist) * 0.01;
           var d = this.tubes[i].material.uniforms.index.value;
-          TweenMax.to(this.tubes[i].position, 0.5, { x: this.offsetX * d, y: -this.offsetY * d, delay: d * 0.1, ease: Quart.easeOut });
+          TweenMax.to(this.tubes[i].rotation, 0.75, { y: this.rotationX * count * 0.01, delay: d * 0.1, ease: Quart.easeOut });
+          TweenMax.to(this.tubes[i].rotation, 0.75, { x: this.rotationY * count * 0.01, delay: d * 0.1, ease: Quart.easeOut });
           TweenMax.to(this.tubes[i].position, 0.75, { z: (this.Z + this.mouseDist) * count * 0.02, delay: d * 0.1, ease: Quart.easeOut });
         } else {
           this.tubes[i].material.uniforms.time.value = this.api.rotation;
