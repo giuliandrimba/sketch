@@ -52271,8 +52271,8 @@ window.THREE = require("three");
 var glslify = require('glslify');
 var OrbitControls = require('three-orbit-controls')(THREE);
 
-var frag = glslify(["#extension GL_OES_standard_derivatives : enable\nprecision highp float;\n#define GLSLIFY 1\n\nvarying vec3 vNormal;\nvarying vec2 vUv;\nvarying vec3 vViewPosition;\n\nuniform vec3 color;\nuniform float animateRadius;\nuniform float animateStrength;\n\nvoid main () {\n  // handle flat and smooth normals\n  vec3 normal = vNormal;\n\n  // Z-normal \"fake\" shading\n  float diffuse = normal.z * 0.5 + 0.5;\n\n  // add some \"rim lighting\"\n  vec3 V = normalize(vViewPosition);\n  float vDotN = 1.0 - max(dot(V, normal), 0.0);\n  float rim = smoothstep(0.5, 1.0, vDotN);\n  diffuse += rim * 2.0;\n\n  // we'll animate in the new color from the center point\n  float distFromCenter = clamp(length(vViewPosition) / 5.0, 0.0, 1.0);\n  float edge = 0.05;\n  float t = animateRadius;\n  vec3 curColor = mix(color, vec3(1.,1.,1.), smoothstep(t - edge, t + edge, vUv.y) * animateStrength);\n\n  // final color\n  gl_FragColor = vec4(diffuse * curColor, 1.0);\n}"]);
-var vert = glslify(["#define GLSLIFY 1\n// attributes of our mesh\nattribute float position;\nattribute float angle;\nattribute vec2 uv;\n\n// built-in uniforms from ThreeJS camera and Object3D\nuniform mat4 projectionMatrix;\nuniform mat4 modelViewMatrix;\nuniform mat3 normalMatrix;\n\n// custom uniforms to build up our tubes\nuniform float thickness;\nuniform float time;\nuniform float animateRadius;\nuniform float animateStrength;\nuniform float index;\nuniform float radialSegments;\n\n// pass a few things along to the vertex shader\nvarying vec2 vUv;\nvarying vec3 vViewPosition;\nvarying vec3 vNormal;\n\n// Import a couple utilities\nconst float PI = 3.14159265359;\n\nfloat exponentialInOut(float t) {\n  return t == 0.0 || t == 1.0\n    ? t\n    : t < 0.5\n      ? +0.5 * pow(2.0, (20.0 * t) - 10.0)\n      : -0.5 * pow(2.0, 10.0 - (t * 20.0)) + 1.0;\n}\n\n// Some constants for the robust version\n#ifdef ROBUST\n  const float MAX_NUMBER = 1.79769313e+308;\n  const float EPSILON = 1.19209290e-7;\n#endif\n\n// Angles to spherical coordinates\nvec3 spherical (float r, float phi, float theta) {\n  return r * vec3(\n    cos(phi) * cos(theta),\n    cos(phi) * sin(theta),\n    sin(phi)\n  );\n}\n\n// Flying a curve along a sine wave\n// vec3 sample (float t) {\n//   float x = t * 2.0 - 1.0;\n//   float y = sin(t + time);\n//   return vec3(x, y, 0.0);\n// }\n\n// Creates an animated torus knot\n// vec3 sample (float t) {\n//   float beta = t * PI;\n  \n//   float ripple = ease(sin(t * 2.0 * PI + time) * 0.5 + 0.5) * 0.5;\n//   float noise = time + index * ripple * 8.0;\n  \n//   // animate radius on click\n//   float radiusAnimation = animateRadius * animateStrength * 0.25;\n//   float r = sin(index * 0.75 + beta * 2.0) * (0.75 + radiusAnimation);\n//   float theta = 4.0 * beta + index * 0.25;\n//   float phi = sin(index * 2.0 + beta * 8.0 + noise);\n\n//   return spherical(r, phi, theta);\n// }\n\nvec3 sample (float t) {\n  float beta = t * PI;\n\n  // float r = sin(beta * 5.0) * index;\n  // float r = sin(index * 0.75 + beta * 2.0);\n  // float phi = sin(beta * 1.0 + time);\n  // float theta = 4.0 * beta;\n\n  float r = cos(t) * index;\n  float phi = sin(t * beta) * index;\n  float theta = 4.0 * beta + (clamp(cos(time) * 30.0, -30.0, 30.0) * index * 0.1);\n\n  return spherical(r, phi, theta);\n}\n\n#ifdef ROBUST\n// ------\n// Robust handling of Frenet-Serret frames with Parallel Transport\n// ------\nvec3 getTangent (vec3 a, vec3 b) {\n  return normalize(b - a);\n}\n\nvoid rotateByAxisAngle (inout vec3 normal, vec3 axis, float angle) {\n  // http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm\n  // assumes axis is normalized\n  float halfAngle = angle / 2.0;\n  float s = sin(halfAngle);\n  vec4 quat = vec4(axis * s, cos(halfAngle));\n  normal = normal + 2.0 * cross(quat.xyz, cross(quat.xyz, normal) + quat.w * normal);\n}\n\nvoid createTube (float t, vec2 volume, out vec3 outPosition, out vec3 outNormal) {\n  // Reference:\n  // https://github.com/mrdoob/three.js/blob/b07565918713771e77b8701105f2645b1e5009a7/src/extras/core/Curve.js#L268\n  float nextT = t + (1.0 / lengthSegments);\n\n  // find first tangent\n  vec3 point0 = sample(0.0);\n  vec3 point1 = sample(1.0 / lengthSegments);\n\n  vec3 lastTangent = getTangent(point0, point1);\n  vec3 absTangent = abs(lastTangent);\n  #ifdef ROBUST_NORMAL\n    float min = MAX_NUMBER;\n    vec3 tmpNormal = vec3(0.0);\n    if (absTangent.x <= min) {\n      min = absTangent.x;\n      tmpNormal.x = 1.0;\n    }\n    if (absTangent.y <= min) {\n      min = absTangent.y;\n      tmpNormal.y = 1.0;\n    }\n    if (absTangent.z <= min) {\n      tmpNormal.z = 1.0;\n    }\n  #else\n    vec3 tmpNormal = vec3(1.0, 0.0, 0.0);\n  #endif\n  vec3 tmpVec = normalize(cross(lastTangent, tmpNormal));\n  vec3 lastNormal = cross(lastTangent, tmpVec);\n  vec3 lastBinormal = cross(lastTangent, lastNormal);\n  vec3 lastPoint = point0;\n\n  vec3 normal;\n  vec3 tangent;\n  vec3 binormal;\n  vec3 point;\n  float maxLen = (lengthSegments - 1.0);\n  float epSq = EPSILON * EPSILON;\n  for (float i = 1.0; i < lengthSegments; i += 1.0) {\n    float u = i / maxLen;\n    // could avoid additional sample here at expense of ternary\n    // point = i == 1.0 ? point1 : sample(u);\n    point = sample(u);\n    tangent = getTangent(lastPoint, point);\n    normal = lastNormal;\n    binormal = lastBinormal;\n\n    tmpVec = cross(lastTangent, tangent);\n    if ((tmpVec.x * tmpVec.x + tmpVec.y * tmpVec.y + tmpVec.z * tmpVec.z) > epSq) {\n      tmpVec = normalize(tmpVec);\n      float tangentDot = dot(lastTangent, tangent);\n      float theta = acos(clamp(tangentDot, -1.0, 1.0)); // clamp for floating pt errors\n      rotateByAxisAngle(normal, tmpVec, theta);\n    }\n\n    binormal = cross(tangent, normal);\n    if (u >= t) break;\n\n    lastPoint = point;\n    lastTangent = tangent;\n    lastNormal = normal;\n    lastBinormal = binormal;\n  }\n\n  // extrude outward to create a tube\n  float tubeAngle = angle;\n  float circX = cos(tubeAngle);\n  float circY = sin(tubeAngle);\n\n  // compute the TBN matrix\n  vec3 T = tangent;\n  vec3 B = binormal;\n  vec3 N = -normal;\n\n  // extrude the path & create a new normal\n  outNormal.xyz = normalize(B * circX + N * circY);\n  outPosition.xyz = point + B * volume.x * circX + N * volume.y * circY;\n}\n#else\n// ------\n// Fast version; computes the local Frenet-Serret frame\n// ------\nvoid createTube (float t, vec2 volume, out vec3 offset, out vec3 normal) {\n  // find next sample along curve\n  float nextT = t + (1.0 / lengthSegments);\n\n  // sample the curve in two places\n  vec3 current = sample(t);\n  vec3 next = sample(nextT);\n  \n  // compute the TBN matrix\n  vec3 T = normalize(next - current);\n  vec3 B = normalize(cross(T, next + current));\n  vec3 N = -normalize(cross(B, T));\n\n  // extrude outward to create a tube\n  float tubeAngle = angle;\n  float circX = cos(tubeAngle);\n  float circY = sin(tubeAngle);\n\n  // compute position and normal\n  normal.xyz = normalize(B * circX + N * circY);\n  offset.xyz = current + B * volume.x * circX + N * volume.y * circY;\n}\n#endif\n\nvoid main() {\n  // current position to sample at\n  // [-0.5 .. 0.5] to [0.0 .. 1.0]\n  float t = (position * 2.0) * 0.5 + 0.5;\n\n  // build our tube geometry\n  vec2 volume = vec2(thickness);\n\n  // animate the per-vertex curve thickness\n  float volumeAngle = t * lengthSegments * 0.5 + index * 20.0 + time * 2.5;\n  float volumeMod = sin(volumeAngle) * 0.5 + 0.5;\n  volume += 0.001 * volumeMod;\n\n  // build our geometry\n  vec3 transformed;\n  vec3 objectNormal;\n  createTube(t, volume, transformed, objectNormal);\n\n  // pass the normal and UV along\n  vec3 transformedNormal = normalMatrix * objectNormal;\n  vNormal = normalize(transformedNormal);\n  vUv = uv.yx; // swizzle this to match expectations\n\n  // project our vertex position\n  vec4 mvPosition = modelViewMatrix * vec4(transformed, 1.0);\n  vViewPosition = -mvPosition.xyz;\n  gl_Position = projectionMatrix * mvPosition;\n}"]);
+var frag = glslify(["#extension GL_OES_standard_derivatives : enable\nprecision highp float;\n#define GLSLIFY 1\n\nvarying vec3 vNormal;\nvarying vec2 vUv;\nvarying vec3 vViewPosition;\n\nuniform vec3 color;\nuniform float animateRadius;\nuniform float animateStrength;\nuniform float opacity;\n\nvoid main () {\n  // handle flat and smooth normals\n  vec3 normal = vNormal;\n\n  // Z-normal \"fake\" shading\n  float diffuse = normal.z * 0.5 + 0.5;\n\n  // add some \"rim lighting\"\n  vec3 V = normalize(vViewPosition);\n  float vDotN = 1.0 - max(dot(V, normal), 0.0);\n  float rim = smoothstep(0.5, 1.0, vDotN);\n  diffuse += rim * 2.0;\n\n  // we'll animate in the new color from the center point\n  float distFromCenter = clamp(length(vViewPosition) / 5.0, 0.0, 1.0);\n  float edge = 0.05;\n  float t = animateRadius;\n  vec3 curColor = mix(color, vec3(1.,1.,1.), smoothstep(t - edge, t + edge, vUv.y));\n\n  // final color\n  gl_FragColor = vec4(diffuse * curColor, 0.0);\n}\n"]);
+var vert = glslify(["#define GLSLIFY 1\n// attributes of our mesh\nattribute float position;\nattribute float angle;\nattribute vec2 uv;\n\n// built-in uniforms from ThreeJS camera and Object3D\nuniform mat4 projectionMatrix;\nuniform mat4 modelViewMatrix;\nuniform mat3 normalMatrix;\n\n// custom uniforms to build up our tubes\nuniform float thickness;\nuniform float time;\nuniform float animateRadius;\nuniform float animateStrength;\nuniform float index;\nuniform float radialSegments;\n\n// pass a few things along to the vertex shader\nvarying vec2 vUv;\nvarying vec3 vViewPosition;\nvarying vec3 vNormal;\n\n// Import a couple utilities\nconst float PI = 3.14159265359;\n\nfloat exponentialInOut(float t) {\n  return t == 0.0 || t == 1.0\n    ? t\n    : t < 0.5\n      ? +0.5 * pow(2.0, (20.0 * t) - 10.0)\n      : -0.5 * pow(2.0, 10.0 - (t * 20.0)) + 1.0;\n}\n\n// Some constants for the robust version\n#ifdef ROBUST\n  const float MAX_NUMBER = 1.79769313e+308;\n  const float EPSILON = 1.19209290e-7;\n#endif\n\n// Angles to spherical coordinates\nvec3 spherical (float r, float phi, float theta) {\n  return r * vec3(\n    cos(phi) * cos(theta),\n    cos(phi) * sin(theta),\n    sin(phi)\n  );\n}\n\n// Flying a curve along a sine wave\n// vec3 sample (float t) {\n//   float x = t * 2.0 - 1.0;\n//   float y = sin(t + time);\n//   return vec3(x, y, 0.0);\n// }\n\n// Creates an animated torus knot\n// vec3 sample (float t) {\n//   float beta = t * PI;\n\n//   float ripple = ease(sin(t * 2.0 * PI + time) * 0.5 + 0.5) * 0.5;\n//   float noise = time + index * ripple * 8.0;\n\n//   // animate radius on click\n//   float radiusAnimation = animateRadius * animateStrength * 0.25;\n//   float r = sin(index * 0.75 + beta * 2.0) * (0.75 + radiusAnimation);\n//   float theta = 4.0 * beta + index * 0.25;\n//   float phi = sin(index * 2.0 + beta * 8.0 + noise);\n\n//   return spherical(r, phi, theta);\n// }\n\nvec3 sample (float t) {\n  float beta = t * PI;\n\n  // float r = sin(beta * 5.0) * index;\n  // float r = sin(index * 0.75 + beta * 2.0);\n  // float phi = sin(beta * 1.0 + time);\n  // float theta = 4.0 * beta;\n\n  float r = cos(t) * index;\n  float phi = sin(t * beta) * index;\n  float theta = 4.0 * beta + (clamp(cos(time) * 30.0, -30.0, 30.0) * index * 0.1) ;\n\n  return spherical(r, phi, theta);\n}\n\n#ifdef ROBUST\n// ------\n// Robust handling of Frenet-Serret frames with Parallel Transport\n// ------\nvec3 getTangent (vec3 a, vec3 b) {\n  return normalize(b - a);\n}\n\nvoid rotateByAxisAngle (inout vec3 normal, vec3 axis, float angle) {\n  // http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm\n  // assumes axis is normalized\n  float halfAngle = angle / 2.0;\n  float s = sin(halfAngle);\n  vec4 quat = vec4(axis * s, cos(halfAngle));\n  normal = normal + 2.0 * cross(quat.xyz, cross(quat.xyz, normal) + quat.w * normal);\n}\n\nvoid createTube (float t, vec2 volume, out vec3 outPosition, out vec3 outNormal) {\n  // Reference:\n  // https://github.com/mrdoob/three.js/blob/b07565918713771e77b8701105f2645b1e5009a7/src/extras/core/Curve.js#L268\n  float nextT = t + (1.0 / lengthSegments);\n\n  // find first tangent\n  vec3 point0 = sample(0.0);\n  vec3 point1 = sample(1.0 / lengthSegments);\n\n  vec3 lastTangent = getTangent(point0, point1);\n  vec3 absTangent = abs(lastTangent);\n  #ifdef ROBUST_NORMAL\n    float min = MAX_NUMBER;\n    vec3 tmpNormal = vec3(0.0);\n    if (absTangent.x <= min) {\n      min = absTangent.x;\n      tmpNormal.x = 1.0;\n    }\n    if (absTangent.y <= min) {\n      min = absTangent.y;\n      tmpNormal.y = 1.0;\n    }\n    if (absTangent.z <= min) {\n      tmpNormal.z = 1.0;\n    }\n  #else\n    vec3 tmpNormal = vec3(1.0, 0.0, 0.0);\n  #endif\n  vec3 tmpVec = normalize(cross(lastTangent, tmpNormal));\n  vec3 lastNormal = cross(lastTangent, tmpVec);\n  vec3 lastBinormal = cross(lastTangent, lastNormal);\n  vec3 lastPoint = point0;\n\n  vec3 normal;\n  vec3 tangent;\n  vec3 binormal;\n  vec3 point;\n  float maxLen = (lengthSegments - 1.0);\n  float epSq = EPSILON * EPSILON;\n  for (float i = 1.0; i < lengthSegments; i += 1.0) {\n    float u = i / maxLen;\n    // could avoid additional sample here at expense of ternary\n    // point = i == 1.0 ? point1 : sample(u);\n    point = sample(u);\n    tangent = getTangent(lastPoint, point);\n    normal = lastNormal;\n    binormal = lastBinormal;\n\n    tmpVec = cross(lastTangent, tangent);\n    if ((tmpVec.x * tmpVec.x + tmpVec.y * tmpVec.y + tmpVec.z * tmpVec.z) > epSq) {\n      tmpVec = normalize(tmpVec);\n      float tangentDot = dot(lastTangent, tangent);\n      float theta = acos(clamp(tangentDot, -1.0, 1.0)); // clamp for floating pt errors\n      rotateByAxisAngle(normal, tmpVec, theta);\n    }\n\n    binormal = cross(tangent, normal);\n    if (u >= t) break;\n\n    lastPoint = point;\n    lastTangent = tangent;\n    lastNormal = normal;\n    lastBinormal = binormal;\n  }\n\n  // extrude outward to create a tube\n  float tubeAngle = angle;\n  float circX = cos(tubeAngle);\n  float circY = sin(tubeAngle);\n\n  // compute the TBN matrix\n  vec3 T = tangent;\n  vec3 B = binormal;\n  vec3 N = -normal;\n\n  // extrude the path & create a new normal\n  outNormal.xyz = normalize(B * circX + N * circY);\n  outPosition.xyz = point + B * volume.x * circX + N * volume.y * circY;\n}\n#else\n// ------\n// Fast version; computes the local Frenet-Serret frame\n// ------\nvoid createTube (float t, vec2 volume, out vec3 offset, out vec3 normal) {\n  // find next sample along curve\n  float nextT = t + (1.0 / lengthSegments);\n\n  // sample the curve in two places\n  vec3 current = sample(t);\n  vec3 next = sample(nextT);\n\n  // compute the TBN matrix\n  vec3 T = normalize(next - current);\n  vec3 B = normalize(cross(T, next + current));\n  vec3 N = -normalize(cross(B, T));\n\n  // extrude outward to create a tube\n  float tubeAngle = angle;\n  float circX = cos(tubeAngle);\n  float circY = sin(tubeAngle);\n\n  // compute position and normal\n  normal.xyz = normalize(B * circX + N * circY);\n  offset.xyz = current + B * volume.x * circX + N * volume.y * circY;\n}\n#endif\n\nvoid main() {\n  // current position to sample at\n  // [-0.5 .. 0.5] to [0.0 .. 1.0]\n  float t = (position * 2.0) * 0.5 + 0.5;\n\n  // build our tube geometry\n  vec2 volume = vec2(thickness);\n\n  // animate the per-vertex curve thickness\n  float volumeAngle = t * lengthSegments * 0.5 + index * 20.0 + time * 2.5;\n  float volumeMod = sin(volumeAngle) * 0.5 + 0.5;\n  volume += 0.001 * volumeMod;\n\n  // build our geometry\n  vec3 transformed;\n  vec3 objectNormal;\n  createTube(t, volume, transformed, objectNormal);\n\n  // pass the normal and UV along\n  vec3 transformedNormal = normalMatrix * objectNormal;\n  vNormal = normalize(transformedNormal);\n  vUv = uv.yx; // swizzle this to match expectations\n\n  // project our vertex position\n  vec4 mvPosition = modelViewMatrix * vec4(transformed, 1.0);\n  vViewPosition = -mvPosition.xyz;\n  gl_Position = projectionMatrix * mvPosition;\n}\n"]);
 
 var createTubeGeometry = require('./three/createTubeGeometry');
 
@@ -52292,6 +52292,7 @@ var App = function () {
     this.renderer.sortObjects = false;
     this.interactive = false;
     this.offsetX = 0;
+    this.animateStrength = 0;
     this.mouseDist = 0;
     this.rotationSpeed = 0.01;
     this.Z = 0;
@@ -52336,6 +52337,7 @@ var App = function () {
       uniforms: {
         color: { value: new THREE.Color(0xeeeeee) },
         thickness: { type: 'f', value: 0.0001 },
+        animateStrength: { type: 'f', value: 1.0 },
         index: { type: 'f', value: 0.0 },
         zOffset: { type: 'f', value: 0.0 },
         time: { type: 'f', value: 0 },
@@ -52398,9 +52400,38 @@ var App = function () {
       window.addEventListener("resize", this.resize.bind(this));
       document.body.addEventListener("mousemove", this.mouseMove.bind(this));
       this.renderer.domElement.addEventListener("touchmove", this.touchMove.bind(this));
+      // this.renderer.domElement.addEventListener("touchdown", ()=>{ this.touched = true});
+      // this.renderer.domElement.addEventListener("touchup", ()=>{ this.touched = false});
       document.body.addEventListener("mousedown", this.mousedown.bind(this));
       document.body.addEventListener("mouseup", this.mouseup.bind(this));
       window.addEventListener('resize', this.onWindowResize.bind(this), false);
+
+      // window.addEventListener('deviceorientation',  this.gyro.bind(this), false);
+      // window.addEventListener('MozOrientation',     this.gyro.bind(this), false);
+
+      // if(window.DeviceMotionEvent){
+      //   window.addEventListener("devicemotion", this.gyro.bind(this), false);
+      // }
+    }
+  }, {
+    key: "gyro",
+    value: function gyro(evt) {
+
+      if (!evt.gamma && !evt.beta) {
+        evt.gamma = -(evt.x * (180 / Math.PI));
+        evt.beta = -(evt.y * (180 / Math.PI));
+      }
+
+      this.rotationX = evt.gamma * 0.1;
+      this.rotationY = evt.beta * 0.02;
+      // return
+      // console.log("Accelerometer: "
+      //   + event.accelerationIncludingGravity.x + ", "
+      //   + event.accelerationIncludingGravity.y + ", "
+      //   + event.accelerationIncludingGravity.z
+      // );
+      // this.rotationX = event.accelerationIncludingGravity.x;
+      // this.rotationY = event.accelerationIncludingGravity.y * 0.1;
     }
   }, {
     key: "onWindowResize",
@@ -52414,13 +52445,16 @@ var App = function () {
     key: "mousedown",
     value: function mousedown() {
       this.clicked = true;
-      this.Z = -5;
+      TweenMax.to(this, 1, { Z: -10, ease: Expo.easeInOut });
     }
   }, {
     key: "mouseup",
     value: function mouseup() {
       this.clicked = false;
       this.Z = 0;
+      TweenMax.killTweensOf(this);
+      TweenMax.to(this, 0.25, { Z: 0, ease: Expo.easeInOut });
+      // this.Z = 0;
     }
   }, {
     key: "touchMove",
@@ -52428,8 +52462,8 @@ var App = function () {
       e.preventDefault();
       this.offsetX = (e.touches[0].pageX - window.innerWidth / 2) * 0.01;
       this.offsetY = (e.touches[0].pageY - window.innerHeight / 2) * 0.01;
-      this.rotationX = (e.clientX - window.innerWidth / 2) * 0.01;
-      this.rotationY = (e.clientY - window.innerHeight / 2) * 0.01;
+      this.rotationX = (e.touches[0].pageX - window.innerWidth / 2) * 0.02;
+      this.rotationY = (e.touches[0].pageY - window.innerHeight / 2) * 0.02;
 
       if (this.rotationX >= 0) {
         this.rotationX = Math.min(5, this.rotationX);
@@ -52444,7 +52478,7 @@ var App = function () {
       }
 
       this.mouseDist = Math.sqrt(this.offsetX * this.offsetX + this.offsetY * this.offsetY);
-      this.mouseDist = Math.min(0.5, this.mouseDist);
+      this.mouseDist = Math.min(0.5, this.mouseDist) * 0.1;
     }
   }, {
     key: "mouseMove",
@@ -52453,6 +52487,7 @@ var App = function () {
       this.offsetY = (e.clientY - window.innerHeight / 2) * 0.001;
       this.rotationX = (e.clientX - window.innerWidth / 2) * 0.01;
       this.rotationY = (e.clientY - window.innerHeight / 2) * 0.01;
+
       if (this.rotationX >= 0) {
         this.rotationX = Math.min(5, this.rotationX);
       } else {
@@ -52467,7 +52502,6 @@ var App = function () {
 
       this.mouseDist = Math.sqrt(this.offsetX * this.offsetX + this.offsetY * this.offsetY);
       this.mouseDist = Math.min(0.7, this.mouseDist);
-      console.log(this.rotationX);
     }
   }, {
     key: "render",
@@ -52478,6 +52512,15 @@ var App = function () {
       for (var i = 0; i < this.totalTubes; i++) {
         if (this.interactive) {
           this.tubes[i].material.uniforms.time.value += 0.001 + Math.abs(this.mouseDist) * 0.01;
+          if (this.clicked) {
+            this.animateStrength += 0.001;
+            this.tubes[i].material.uniforms.thickness.value = Math.cos(this.animateStrength) * 0.002;
+            // this.tubes[i].material.uniforms.thickness.value =  0.0002;
+          } else {
+            this.tubes[i].material.uniforms.thickness.value = 0.0001;
+            this.tubes[i].material.uniforms.animateStrength.value = 1;
+            this.animateStrength = 1;
+          }
           var d = this.tubes[i].material.uniforms.index.value;
           TweenMax.to(this.tubes[i].rotation, 0.75, { y: this.rotationX * count * 0.01, delay: d * 0.1, ease: Quart.easeOut });
           TweenMax.to(this.tubes[i].rotation, 0.75, { x: this.rotationY * count * 0.01, delay: d * 0.1, ease: Quart.easeOut });
@@ -52581,6 +52624,7 @@ function createLineGeometry() {
   var xPositions = [];
   var angles = [];
   var uvs = [];
+  var thick = [];
   var vertices = baseGeometry.vertices;
   var faceVertexUvs = baseGeometry.faceVertexUvs[0];
 
@@ -52603,7 +52647,7 @@ function createLineGeometry() {
       // the radial angle around the tube
       var angle = Math.atan2(tmpVec.y, tmpVec.x);
       angles.push(angle);
-
+      thick.push(1);
       // "arc length" in range [-0.5 .. 0.5]
       xPositions.push(v.x);
 
@@ -52629,6 +52673,7 @@ function createLineGeometry() {
 
   var geometry = new THREE.BufferGeometry();
   geometry.addAttribute('position', new THREE.BufferAttribute(posArray, 1));
+  geometry.addAttribute('thick', new THREE.BufferAttribute(posArray, 1));
   geometry.addAttribute('angle', new THREE.BufferAttribute(angleArray, 1));
   geometry.addAttribute('uv', new THREE.BufferAttribute(uvArray, 2));
 
