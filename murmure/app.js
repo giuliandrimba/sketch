@@ -52306,6 +52306,7 @@ var App = function () {
     this.camera.position.set(0, 0, 0.7);
     this.screenshotCamera.position.set(0, 0, 0.7);
 
+    var controls = new OrbitControls(this.camera, this.renderer.domElement);
     if (this.isInteractive()) {} else {
       var controls = new OrbitControls(this.camera, this.renderer.domElement);
       var controls2 = new OrbitControls(this.screenshotCamera, this.renderer.domElement);
