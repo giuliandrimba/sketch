@@ -52276,43 +52276,50 @@ var vert = glslify(["#define GLSLIFY 1\n// attributes of our mesh\nattribute flo
 
 var createTubeGeometry = require('./three/createTubeGeometry');
 
-var App = function () {
-  function App() {
-    _classCallCheck(this, App);
+var NordikExperiment = function () {
+  function NordikExperiment(parent, interactive, scroll) {
+    _classCallCheck(this, NordikExperiment);
 
     this.scene = new THREE.Scene();
+    this.enableScroll = scroll;
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.screenshotCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true, antialias: true, premultipliedAlpha: true });
     this.downloadRenderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true, premultipliedAlpha: true });
     this.downloadRenderer.setSize(2250, 7000);
     this.renderer.gammaFactor = 2.2;
+    this.PAUSED = false;
     this.renderer.gammaOutput = true;
     this.renderer.gammaInput = true;
     this.renderer.sortObjects = false;
-    this.interactive = false;
+    this.interactive = interactive;
     this.offsetX = 0;
     this.animateStrength = 0;
     this.mouseDist = 0;
     this.rotationSpeed = 0.01;
+    this.mylatesttap = 0;
     this.Z = 0;
     // this.renderer.setClearColor( 0xffffff );
-    if (this.isInteractive()) {
-      this.interactive = true;
-    } else {
+    if (!this.interactive) {
       this.setupGUI();
     }
 
     this.camera.position.set(0, 0, 0.7);
     this.screenshotCamera.position.set(0, 0, 0.7);
 
-    var controls = new OrbitControls(this.camera, this.renderer.domElement);
-    if (this.isInteractive()) {} else {
+    if (this.enableScroll === true) {
       var controls = new OrbitControls(this.camera, this.renderer.domElement);
-      var controls2 = new OrbitControls(this.screenshotCamera, this.renderer.domElement);
+      if (this.interactive) {
+        controls.enableRotate = false;
+        controls.maxDistance = 5;
+        controls.minDistance = 0.2;
+      } else {
+        var controls = new OrbitControls(this.camera, this.renderer.domElement);
+        var controls2 = new OrbitControls(this.screenshotCamera, this.renderer.domElement);
+      }
     }
 
-    document.body.appendChild(this.renderer.domElement);
+    parent.appendChild(this.renderer.domElement);
 
     // tweak these to your liking
     this.totalTubes = 40;
@@ -52353,13 +52360,7 @@ var App = function () {
     this.render();
   }
 
-  _createClass(App, [{
-    key: "isInteractive",
-    value: function isInteractive() {
-      return (/interactive/.test(window.location.href.toString())
-      );
-    }
-  }, {
+  _createClass(NordikExperiment, [{
     key: "setupGUI",
     value: function setupGUI() {
       this.gui = new dat.GUI();
@@ -52398,41 +52399,39 @@ var App = function () {
   }, {
     key: "events",
     value: function events() {
-      window.addEventListener("resize", this.resize.bind(this));
-      document.body.addEventListener("mousemove", this.mouseMove.bind(this));
-      this.renderer.domElement.addEventListener("touchmove", this.touchMove.bind(this));
-      // this.renderer.domElement.addEventListener("touchdown", ()=>{ this.touched = true});
-      // this.renderer.domElement.addEventListener("touchup", ()=>{ this.touched = false});
-      document.body.addEventListener("mousedown", this.mousedown.bind(this));
-      document.body.addEventListener("mouseup", this.mouseup.bind(this));
       window.addEventListener('resize', this.onWindowResize.bind(this), false);
 
-      // window.addEventListener('deviceorientation',  this.gyro.bind(this), false);
-      // window.addEventListener('MozOrientation',     this.gyro.bind(this), false);
-
-      // if(window.DeviceMotionEvent){
-      //   window.addEventListener("devicemotion", this.gyro.bind(this), false);
-      // }
+      if (this.isTouch()) {
+        document.body.addEventListener("touchstart", this.dblclick.bind(this));
+        this.renderer.domElement.addEventListener("touchmove", this.touchMove.bind(this));
+      } else {
+        document.body.addEventListener("mousemove", this.mouseMove.bind(this));
+        document.body.addEventListener("mouseup", this.mouseup.bind(this));
+        document.body.addEventListener("mousedown", this.mousedown.bind(this));
+      }
     }
   }, {
-    key: "gyro",
-    value: function gyro(evt) {
-
-      if (!evt.gamma && !evt.beta) {
-        evt.gamma = -(evt.x * (180 / Math.PI));
-        evt.beta = -(evt.y * (180 / Math.PI));
+    key: "isTouch",
+    value: function isTouch() {
+      return 'ontouchstart' in document.documentElement;
+    }
+  }, {
+    key: "dblclick",
+    value: function dblclick(e) {
+      if (e.touches.length > 1) {
+        return;
+      }
+      var now = new Date().getTime();
+      var timesince = now - this.mylatesttap;
+      if (timesince < 600 && timesince > 0) {
+        if (this.clicked === false) {
+          this.mousedown();
+        } else {
+          this.mouseup();
+        }
       }
 
-      this.rotationX = evt.gamma * 0.1;
-      this.rotationY = evt.beta * 0.02;
-      // return
-      // console.log("Accelerometer: "
-      //   + event.accelerationIncludingGravity.x + ", "
-      //   + event.accelerationIncludingGravity.y + ", "
-      //   + event.accelerationIncludingGravity.z
-      // );
-      // this.rotationX = event.accelerationIncludingGravity.x;
-      // this.rotationY = event.accelerationIncludingGravity.y * 0.1;
+      this.mylatesttap = new Date().getTime();
     }
   }, {
     key: "onWindowResize",
@@ -52445,12 +52444,14 @@ var App = function () {
   }, {
     key: "mousedown",
     value: function mousedown() {
+      if (this.PAUSED) return;
       this.clicked = true;
       TweenMax.to(this, 1, { Z: -10, ease: Expo.easeInOut });
     }
   }, {
     key: "mouseup",
     value: function mouseup() {
+      if (this.PAUSED) return;
       this.clicked = false;
       this.Z = 0;
       TweenMax.killTweensOf(this);
@@ -52461,6 +52462,7 @@ var App = function () {
     key: "touchMove",
     value: function touchMove(e) {
       e.preventDefault();
+      if (this.PAUSED) return;
       this.offsetX = (e.touches[0].pageX - window.innerWidth / 2) * 0.01;
       this.offsetY = (e.touches[0].pageY - window.innerHeight / 2) * 0.01;
       this.rotationX = (e.touches[0].pageX - window.innerWidth / 2) * 0.02;
@@ -52484,6 +52486,7 @@ var App = function () {
   }, {
     key: "mouseMove",
     value: function mouseMove(e) {
+      if (this.PAUSED) return;
       this.offsetX = (e.clientX - window.innerWidth / 2) * 0.001;
       this.offsetY = (e.clientY - window.innerHeight / 2) * 0.001;
       this.rotationX = (e.clientX - window.innerWidth / 2) * 0.01;
@@ -52507,7 +52510,7 @@ var App = function () {
   }, {
     key: "render",
     value: function render() {
-      window.requestAnimationFrame(this.render.bind(this));
+      this.rAF = window.requestAnimationFrame(this.render.bind(this));
       var count = this.totalTubes - 1;
       var middle = Math.abs(this.totalTubes / 2);
       for (var i = 0; i < this.totalTubes; i++) {
@@ -52537,6 +52540,28 @@ var App = function () {
     key: "resize",
     value: function resize() {
       this.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+  }, {
+    key: "pause",
+    value: function pause() {
+      window.cancelAnimationFrame(this.rAF);
+    }
+  }, {
+    key: "resume",
+    value: function resume() {
+      this.rAF = window.requestAnimationFrame(this.render.bind(this));
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      window.cancelAnimationFrame(this.rAF);
+      window.removeEventListener("resize", this.resize.bind(this));
+      document.body.removeEventListener("mousemove", this.mouseMove.bind(this));
+      this.renderer.domElement.removeEventListener("touchmove", this.touchMove.bind(this));
+      document.body.removeEventListener("mousedown", this.mousedown.bind(this));
+      document.body.removeEventListener("mouseup", this.mouseup.bind(this));
+      window.removeEventListener('resize', this.onWindowResize.bind(this), false);
+      this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
     }
   }, {
     key: "takeScreenshot",
@@ -52596,10 +52621,10 @@ var App = function () {
     }
   }]);
 
-  return App;
+  return NordikExperiment;
 }();
 
-new App();
+window.NordikExperiment = NordikExperiment;
 
 },{"./three/createTubeGeometry":7,"css-browser-selector":1,"glslify":2,"gsap":3,"three":5,"three-orbit-controls":4}],7:[function(require,module,exports){
 'use strict';
