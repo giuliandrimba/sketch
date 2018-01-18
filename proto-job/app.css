@@ -49,5 +49,16 @@ table {
 
 body {
   overflow: hidden;
-  background-color: black;
+  background-color: #f0f2f1;
+}
+
+p {
+  font-family: 'Helvetica', Arial;
+  color: #414342;
+  font-size: 12px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  transform: translateX(-50%) translateY(-50%);
 }
