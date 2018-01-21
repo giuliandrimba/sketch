@@ -46495,7 +46495,7 @@ var App = function () {
       color: 0xffffff,
       colorRandomness: .2,
       turbulence: .5,
-      lifetime: 10,
+      lifetime: 6,
       size: 1,
       sizeRandomness: 5
     };
