@@ -46291,7 +46291,7 @@ THREE.GPUParticleContainer = function (maxParticles, particleSystem) {
     var lifetime = options.lifetime !== undefined ? options.lifetime : 5;
     var size = options.size !== undefined ? options.size : 10;
     var sizeRandomness = options.sizeRandomness !== undefined ? options.sizeRandomness : 0;
-    var smoothPosition = options.smoothPosition !== undefined ? options.smoothPosition : false;
+    var smoothPosition = options.smoothPosition !== undefined ? options.smoothPosition : true;
 
     if (this.DPR !== undefined) size *= this.DPR;
 
@@ -46463,7 +46463,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 window.THREE = require("three");
 require('./GPUParticleSystem');
 var glsl = require('glslify');
-var particles = 10000;
+var particles = 20000;
 var noise = require("@giuliandrimba/noise");
 
 var App = function () {
@@ -46495,7 +46495,7 @@ var App = function () {
       color: 0xffffff,
       colorRandomness: .2,
       turbulence: .5,
-      lifetime: 6,
+      lifetime: 10,
       size: 1,
       sizeRandomness: 5
     };
