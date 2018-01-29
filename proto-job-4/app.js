@@ -54082,7 +54082,7 @@ require("./three/perlin");
 var glslify = require('glslify');
 var TweenMax = require('gsap');
 var ProjectorHelper = require('./three/projectorHelper');
-var particles = 10000;
+var particles = 5000;
 var noise = require("@giuliandrimba/noise");
 var Particle = require("./three/particle");
 
