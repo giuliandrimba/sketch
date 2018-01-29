@@ -54544,13 +54544,13 @@ function Particle(x, y, z) {
   this.vx = 0;
   this.vy = 0;
   this.ac = 0;
-  this.speed = 2;
+  this.speed = 0.2;
   this.dx = 0;
   this.dy = 0;
-  this.spring = 0.8;
+  this.spring = 0.9;
   this.ax = 0;
   this.ay = 0;
-  this.friction = 0.3;
+  this.friction = 0.8;
   this.target = new THREE.Vector3(this.pos.x, this.pos.y, this.pos.z);
   this.maxRad = 30 + Math.random() * 40;
 }
