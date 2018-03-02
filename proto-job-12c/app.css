@@ -50,13 +50,13 @@ table {
 body {
   overflow: hidden;
   background-color: #fff;
-  background: rgba(240,239,244,1);
-background: -moz-linear-gradient(-45deg, rgba(240,239,244,1) 0%, rgba(185,187,202,1) 23%, rgba(185,187,202,1) 36%, rgba(254,254,254,1) 80%, rgba(198,197,211,1) 100%);
-background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(240,239,244,1)), color-stop(23%, rgba(185,187,202,1)), color-stop(36%, rgba(185,187,202,1)), color-stop(80%, rgba(254,254,254,1)), color-stop(100%, rgba(198,197,211,1)));
-background: -webkit-linear-gradient(-45deg, rgba(240,239,244,1) 0%, rgba(185,187,202,1) 23%, rgba(185,187,202,1) 36%, rgba(254,254,254,1) 80%, rgba(198,197,211,1) 100%);
-background: -o-linear-gradient(-45deg, rgba(240,239,244,1) 0%, rgba(185,187,202,1) 23%, rgba(185,187,202,1) 36%, rgba(254,254,254,1) 80%, rgba(198,197,211,1) 100%);
-background: -ms-linear-gradient(-45deg, rgba(240,239,244,1) 0%, rgba(185,187,202,1) 23%, rgba(185,187,202,1) 36%, rgba(254,254,254,1) 80%, rgba(198,197,211,1) 100%);
-background: linear-gradient(135deg, rgba(240,239,244,1) 0%, rgba(185,187,202,1) 23%, rgba(185,187,202,1) 36%, rgba(254,254,254,1) 80%, rgba(198,197,211,1) 100%);
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0eff4', endColorstr='#c6c5d3', GradientType=1 );
+  background: rgba(214,214,224,1);
+background: -moz-radial-gradient(center, ellipse cover, rgba(214,214,224,1) 0%, rgba(255,255,255,1) 100%);
+background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(214,214,224,1)), color-stop(100%, rgba(255,255,255,1)));
+background: -webkit-radial-gradient(center, ellipse cover, rgba(214,214,224,1) 0%, rgba(255,255,255,1) 100%);
+background: -o-radial-gradient(center, ellipse cover, rgba(214,214,224,1) 0%, rgba(255,255,255,1) 100%);
+background: -ms-radial-gradient(center, ellipse cover, rgba(214,214,224,1) 0%, rgba(255,255,255,1) 100%);
+background: radial-gradient(ellipse at center, rgba(214,214,224,1) 0%, rgba(255,255,255,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d6d6e0', endColorstr='#ffffff', GradientType=1 );
 
 }
