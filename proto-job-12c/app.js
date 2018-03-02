@@ -53977,8 +53977,6 @@ var App = function () {
   function App() {
     _classCallCheck(this, App);
 
-    console.log(this.getParticlesCount());
-
     var options = {
       fboSize: this.getParticlesCount(),
       radius: 120
@@ -54129,6 +54127,7 @@ var Simulation = function () {
     this.camera = camera;
     this.mouse = new THREE.Vector3();
     this.screenMouse = new THREE.Vector2();
+    this.initMouseMove = false;
 
     this.SPEED = 0.1;
     this.TIME_SPEED = 0.4;
@@ -54300,14 +54299,17 @@ var Simulation = function () {
       this.acceleration.material.uniforms.oldMousePos.value.x = this.mouse.x;
       this.acceleration.material.uniforms.oldMousePos.value.y = -this.mouse.y;
       this.Helper.compute(event.clientX, event.clientY, this.camera, this.mouse);
-      // this.acceleration.material.uniforms.mousePos.value.x = this.mouse.x;
-      // this.acceleration.material.uniforms.mousePos.value.y = -this.mouse.y;
 
       this.screenMouse.x = Math.abs(event.clientX - window.innerWidth / 2);
       this.screenMouse.y = Math.abs(event.clientY - window.innerHeight / 2);
 
-      TweenMax.to(this.acceleration.material.uniforms.mousePos.value, 0.5, { x: this.mouse.x, y: -this.mouse.y });
-      TweenMax.to(this.acceleration.material.uniforms.mousePos.value, 0.5, { x: this.mouse.x, y: -this.mouse.y });
+      if (!this.initMouseMove) {
+        this.acceleration.material.uniforms.mousePos.value.x = this.mouse.x;
+        this.acceleration.material.uniforms.mousePos.value.y = -this.mouse.y;
+        this.initMouseMove = true;
+      } else {
+        TweenMax.to(this.acceleration.material.uniforms.mousePos.value, 0.5, { x: this.mouse.x, y: -this.mouse.y });
+      }
 
       TweenMax.to(this.acceleration.material.uniforms.repulseRadius, 0.5, { value: this.RADIUS * 0.3 + this.RADIUS * 0.2 * (1 - this.screenMouse.length() / (window.innerWidth / 2)) });
     }
