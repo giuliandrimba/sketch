@@ -54306,7 +54306,7 @@ var Simulation = function () {
       this.screenMouse.x = Math.abs(event.clientX - window.innerWidth / 2);
       this.screenMouse.y = Math.abs(event.clientY - window.innerHeight / 2);
 
-      TweenMax.to(this.acceleration.material.uniforms.repulseRadius, 0.5, { value: this.RADIUS * 0.4 + this.RADIUS * 0.4 * (1 - this.screenMouse.length() / (window.innerWidth / 2)) });
+      TweenMax.to(this.acceleration.material.uniforms.repulseRadius, 0.5, { value: this.RADIUS * 0.3 + this.RADIUS * 0.2 * (1 - this.screenMouse.length() / (window.innerWidth / 2)) });
     }
   }, {
     key: 'update',
@@ -54315,7 +54315,7 @@ var Simulation = function () {
       if (this.ANIMATING) {
         this.acceleration.material.uniforms.time.value += time;
       } else {
-        this.acceleration.material.uniforms.time.value += this.TIME_SPEED * (0.2 * Math.min(0.1, 1 - this.screenMouse.length() / this.H_W));
+        this.acceleration.material.uniforms.time.value += this.TIME_SPEED * (0.3 * Math.min(0.3, 1 - this.screenMouse.length() / this.H_W));
       }
     }
   }]);
