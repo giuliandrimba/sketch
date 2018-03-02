@@ -53981,7 +53981,7 @@ var App = function () {
 
     var options = {
       fboSize: this.getParticlesCount(),
-      radius: 140
+      radius: 120
     };
 
     this.scene = new THREE.Scene();
@@ -54306,6 +54306,7 @@ var Simulation = function () {
       this.screenMouse.x = Math.abs(event.clientX - window.innerWidth / 2);
       this.screenMouse.y = Math.abs(event.clientY - window.innerHeight / 2);
 
+      TweenMax.to(this.acceleration.material.uniforms.mousePos.value, 0.5, { x: this.mouse.x, y: -this.mouse.y });
       TweenMax.to(this.acceleration.material.uniforms.mousePos.value, 0.5, { x: this.mouse.x, y: -this.mouse.y });
 
       TweenMax.to(this.acceleration.material.uniforms.repulseRadius, 0.5, { value: this.RADIUS * 0.3 + this.RADIUS * 0.2 * (1 - this.screenMouse.length() / (window.innerWidth / 2)) });

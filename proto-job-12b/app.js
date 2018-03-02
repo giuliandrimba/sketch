@@ -53981,7 +53981,7 @@ var App = function () {
 
     var options = {
       fboSize: this.getParticlesCount(),
-      radius: 140
+      radius: 120
     };
 
     this.scene = new THREE.Scene();
