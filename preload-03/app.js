@@ -56720,18 +56720,18 @@ var Simulation = function () {
     _createClass(Simulation, [{
         key: 'restart',
         value: function restart() {
-            this.acceleration.material.uniforms.repulseRadius.value = Math.round(this.options.repulseRadius);
+            this.acceleration.material.uniforms.repulseRadius.value = this.options.repulseRadius;
             var positionsData = new Float32Array(this.TOTAL * 4);
             var emptyData = new Float32Array(this.TOTAL * 4);
             var index = 0;
             var total = this.TOTAL / this.options.lines;
             var step = 360 / total;
             var angle = 0;
-            var radius = Math.round(this.options.radius);
+            var radius = this.options.radius;
             var theta = 0;
             for (var i = 0; i < this.TOTAL; i++) {
                 if (i % total === 0) {
-                    radius += Math.round(this.options.lineDistance);
+                    radius += this.options.lineDistance;
                     angle = 0;
                     theta = 0;
                 }
