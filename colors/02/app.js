@@ -54934,7 +54934,7 @@ var App = function () {
 
 		document.body.appendChild(this.renderer.domElement);
 		this.particles = new _particles2.default(this.scene, this.camera, this.renderer);
-		var controls = new OrbitControls(this.camera);
+		// var controls = new OrbitControls(this.camera)
 		// console.log(controls)
 
 		this.events();
