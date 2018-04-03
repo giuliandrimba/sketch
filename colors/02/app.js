@@ -54910,11 +54910,8 @@ var OrbitControls = require('three-orbit-controls')(window.THREE);
 
 var App = function () {
 	function App() {
-<<<<<<< HEAD
-=======
 		var _this = this;
 
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
 		_classCallCheck(this, App);
 
 		this.scene = new THREE.Scene();
@@ -54923,21 +54920,11 @@ var App = function () {
 		this.renderer = new THREE.WebGLRenderer();
 		this.renderer.setPixelRatio(window.devicePixelRatio);
 		this.renderer.setClearColor(0xeeeeee, 1);
-<<<<<<< HEAD
 		this.cameraPos = {
 			x: 0, y: 0, z: 0
 		};
 
 		this.Options = function () {
-=======
-		this.camera.position.z = 10;
-		this.camera.position.y = 10;
-		this.cameraPos = {
-			x: 0, y: 0, z: 0
-			// this.cameraAnimation = new CameraAnimation(this.camera);
-
-		};this.Options = function () {
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
 			this.speed = 0;
 			this.frequency = 0;
 		};
@@ -54946,10 +54933,6 @@ var App = function () {
 		document.body.appendChild(this.renderer.domElement);
 		this.particles = new _particles2.default(this.scene, this.camera, this.renderer);
 		// var controls = new OrbitControls(this.camera)
-<<<<<<< HEAD
-=======
-		// console.log(controls)
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
 
 		this.events();
 		this.resize();
@@ -54961,23 +54944,16 @@ var App = function () {
 		this.cameraPos.z = 0;
 		this.camera.position.set(this.cameraPos.x, this.cameraPos.y, this.cameraPos.z);
 		this.camera.lookAt(this.particles.mesh.position);
-<<<<<<< HEAD
-		// TweenMax.to(this.cameraPos, 4, { delay:1, x: 3.89, y: 4, z: 4.64, ease:Expo.easeInOut, 
-		// 	onUpdate:()=>{
-		// 		this.camera.position.set(this.cameraPos.x, this.cameraPos.y, this.cameraPos.z)
-		// 		this.camera.lookAt(this.particles.mesh.position)
-		// 	}
-		// })
-=======
-		_gsap.TweenMax.to(this.cameraPos, 4, { delay: 1, x: 3.89, y: 3.98, z: 4.64, ease: Expo.easeInOut,
+		_gsap.TweenMax.to(this.cameraPos, 4, { delay: 1, x: 3.89, y: 4, z: 4.64, ease: Expo.easeInOut,
 			onUpdate: function onUpdate() {
 				_this.camera.position.set(_this.cameraPos.x, _this.cameraPos.y, _this.cameraPos.z);
 				_this.camera.lookAt(_this.particles.mesh.position);
-			},
-			onComplete: function onComplete() {}
+			}
 		});
-		this.particles.events();
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
+
+		setTimeout(function () {
+			window.addEventListener('mousemove', _this.mouseMove);
+		}, 3500);
 	}
 
 	_createClass(App, [{
@@ -54992,35 +54968,25 @@ var App = function () {
 		key: 'events',
 		value: function events() {
 			window.addEventListener("resize", this.resize.bind(this));
-<<<<<<< HEAD
 			this.mouseMove = this.mouseMove.bind(this);
-			window.addEventListener('mousemove', this.mouseMove);
 		}
 	}, {
 		key: 'mouseMove',
 		value: function mouseMove() {
-			var _this = this;
+			var _this2 = this;
 
 			var percentage = 1 - (this.particles.mouseMovement.y + 1) / 2;
 			_gsap.TweenMax.to(this.cameraPos, 2, {
 				y: 4 + percentage * 2, x: 4 - percentage * 4, z: 4 - percentage * 4, ease: Expo.easeOut,
 				onUpdate: function onUpdate() {
-					_this.camera.position.set(_this.cameraPos.x, _this.cameraPos.y, _this.cameraPos.z);
-					_this.camera.lookAt(_this.particles.mesh.position);
+					_this2.camera.position.set(_this2.cameraPos.x, _this2.cameraPos.y, _this2.cameraPos.z);
+					_this2.camera.lookAt(_this2.particles.mesh.position);
 				}
 			});
-=======
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
 		}
 	}, {
 		key: 'render',
 		value: function render() {
-<<<<<<< HEAD
-=======
-			// 0.04, 6.89, 0.03
-			// 5.33, 4.98, 5.87
-			// console.log(this.camera.position)
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
 			window.requestAnimationFrame(this.render);
 			this.particles.update();
 			this.renderer.render(this.scene, this.camera);
@@ -55056,10 +55022,6 @@ var CameraAnimation = function () {
     function CameraAnimation(camera) {
         _classCallCheck(this, CameraAnimation);
 
-<<<<<<< HEAD
-=======
-        console.log(camera);
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
         this.camera = camera;
         // this.camera.position.set(0, 0, 80)
         this.cameraPos0 = camera.position.clone();
@@ -55144,10 +55106,6 @@ var Particles = function () {
         this.NUM_PARTICLES = this.AMOUNTX * this.AMOUNTY;
         this.windowHalfX = window.innerWidth / 2;
         this.windowHalfY = window.innerHeight / 2;
-<<<<<<< HEAD
-=======
-        this.loaded = false;
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
 
         this.createShader();
         this.createMaterial();
@@ -55157,18 +55115,7 @@ var Particles = function () {
         this.mesh.position.y = 4;
         this.mesh.rotation.y = Math.PI / 4 + Math.PI;
         this.scene.add(this.mesh);
-<<<<<<< HEAD
         this.events();
-=======
-        this.loaded = true;
-        // window.requestAnimationFrame(() => {
-        //     // console.log("added")
-        //     this.camera.position.set(-2.84, 3.96, -2.45)
-        //     //  this.camera.rotation.set(-1.57, 0, -1.57)
-        //     this.camera.lookAt(this.mesh.position)
-        // })
-        // this.events();
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
     }
 
     _createClass(Particles, [{
@@ -55186,29 +55133,17 @@ var Particles = function () {
     }, {
         key: 'mouseMove',
         value: function mouseMove(e) {
-<<<<<<< HEAD
-=======
-            // console.log(e.screenX)
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
             var x = e.pageX / window.innerWidth;
             var y = e.pageY / window.innerHeight;
             // x = (x * 2) - 1;
             this.mouseMovement.y = y = y * 2 - 1;
             this.mouseMovement.x = x;
-<<<<<<< HEAD
             // this.mesh.position.y = 4 - (1 - this.mouseMovement.x)
-=======
-            this.mesh.position.y = 4 - (1 - this.mouseMovement.x);
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
             _gsap2.default.to(this.mesh.material.uniforms.frequency, 2, { value: this.frequency * this.mouseMovement.x, ease: Quart.easeOut });
         }
     }, {
         key: 'update',
         value: function update() {
-<<<<<<< HEAD
-=======
-            if (!this.loaded) return;
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
             this.mesh.material.uniforms.time.value += 0.02 * (this.speed * this.mouseMovement.y);
             this.mesh.material.uniforms.delta.value += 0.05;
             this.mesh.material.needsUpdate = true;
@@ -55257,11 +55192,6 @@ var Particles = function () {
 
             this.material.uniforms.gradient.value.wrapS = THREE.RepeatWrapping;
             this.material.uniforms.gradient.value.wrapT = THREE.RepeatWrapping;
-<<<<<<< HEAD
-=======
-            // this.material.uniforms.gradient.value.repeat.set(30, 30);
-            // this.material.uniforms.gradient.value.offset.x = -1;
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
         }
     }, {
         key: 'createGeometry',
@@ -55272,11 +55202,6 @@ var Particles = function () {
 
             var positions = [];
             var index = [];
-<<<<<<< HEAD
-=======
-            var colors = [];
-            var sizes = [];
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
             var numColumns = Math.floor(window.innerWidth / 10);
             var column = 0;
             var row = 0;
@@ -55293,21 +55218,8 @@ var Particles = function () {
                 }
             }
 
-<<<<<<< HEAD
             this.geometry.addAttribute('indexPosition', new THREE.Float32BufferAttribute(index, 2));
             this.geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-=======
-            for (var i = 0; i < this.NUM_PARTICLES; i++) {
-                color.setHSL(i / this.NUM_PARTICLES, 1.0, 0.5);
-                colors.push(color.r, color.g, color.b);
-                sizes.push(0.5);
-            }
-
-            this.geometry.addAttribute('indexPosition', new THREE.Float32BufferAttribute(index, 2));
-            this.geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-            this.geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-            this.geometry.addAttribute('size', new THREE.Float32BufferAttribute(sizes, 1).setDynamic(true));
->>>>>>> 003cf1aa2c2200c575f23ebd524ed3d59f6f952c
         }
     }]);
 
