@@ -55138,7 +55138,7 @@ var Particles = function () {
             // x = (x * 2) - 1;
             this.mouseMovement.y = y = y * 2 - 1;
             this.mouseMovement.x = x;
-            // this.mesh.position.y = 4 - (1 - this.mouseMovement.x)
+            this.mesh.position.y = 4 - (1 - this.mouseMovement.x);
             _gsap2.default.to(this.mesh.material.uniforms.frequency, 2, { value: this.frequency * this.mouseMovement.x, ease: Quart.easeOut });
         }
     }, {
