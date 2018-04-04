@@ -55028,7 +55028,7 @@ var Particles = function () {
         this.cameraPos = { x: -1.98, y: 7.25, z: 0 };
         this.SEPARATION = .04;
         this.AMOUNTX = 400;
-        this.AMOUNTY = 800;
+        this.AMOUNTY = 1200;
         this.mouseMovement = { x: 0, y: 0 };
         this.NUM_PARTICLES = this.AMOUNTX * this.AMOUNTY;
         this.windowHalfX = window.innerWidth / 2;
@@ -55084,7 +55084,7 @@ var Particles = function () {
                 fragmentShader: ['#define GLSLIFY 1', "uniform sampler2D particle;", "uniform sampler2D gradient;", "uniform float time;", "uniform float delta;", "uniform vec2 windowResolution;", "varying vec3 pos;", THREE.ShaderChunk["common"], THREE.ShaderChunk["fog_pars_fragment"], "void main() {", "vec2 uv = vec2(pos.x - (delta * 2.), pos.z)/windowResolution;", 'uv.y -= 0.5;', "vec3 gradientColor = texture2D(gradient, vec2(uv.x, uv.y)).xyz;", "gl_FragColor = vec4( gradientColor, 1.0 );", "gl_FragColor = gl_FragColor * texture2D( particle, gl_PointCoord );", THREE.ShaderChunk["fog_fragment"], "}"].join("\n"),
                 vertexShader: ["uniform float time;", "uniform float frequency;", "attribute float size;", "attribute vec2 indexPosition;", "varying vec3 pos;", "void main() {", "pos = position;", "vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
                 // "mvPosition.y += (sin(time - (indexPosition.x * frequency)) + sin(time - (indexPosition.y * frequency))) * (frequency * 2.);",
-                "mvPosition.y += (cos(time - (indexPosition.x * frequency)) - sin(time + (indexPosition.y * frequency))) * (frequency * 2.) * -1.;", "gl_PointSize = 10.;", "gl_Position = projectionMatrix * mvPosition;", "}"].join("\n")
+                "mvPosition.y += (cos(time - (indexPosition.x * frequency)) - sin(time + (indexPosition.y * frequency))) * (frequency * 2.) * -1.;", "gl_PointSize = 8. + (sin(time + (indexPosition.x * frequency)) + sin(time + (indexPosition.y * frequency))) * (2. * frequency);", "gl_Position = projectionMatrix * mvPosition;", "}"].join("\n")
 
             };
         }
