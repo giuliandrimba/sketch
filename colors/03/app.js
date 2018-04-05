@@ -54913,7 +54913,7 @@ var App = function () {
 		this.scene = new THREE.Scene();
 		this.scene.fog = new THREE.FogExp2(0xeeeeee, 0.1);
 		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
-		this.renderer = new THREE.WebGLRenderer();
+		this.renderer = new THREE.WebGLRenderer({ antialias: true });
 		this.renderer.setPixelRatio(window.devicePixelRatio);
 		this.renderer.setClearColor(0xeeeeee, 1);
 		this.cameraPos = {
@@ -54964,7 +54964,7 @@ var App = function () {
 
 			var percentage = 1 - (this.particles.mouseMovement.y + 1) / 2;
 			_gsap.TweenMax.to(this.cameraPos, 2, {
-				y: 4 + percentage * 2, x: -6 + percentage * 6, z: 7 - percentage * 7, ease: Expo.easeOut,
+				y: 4 + percentage * 2, x: -6.21 + percentage * 6, z: 7 - percentage * 7, ease: Expo.easeOut,
 				onUpdate: function onUpdate() {
 					_this2.camera.position.set(_this2.cameraPos.x, _this2.cameraPos.y, _this2.cameraPos.z);
 					_this2.camera.lookAt(_this2.particles.mesh.position);
@@ -55025,7 +55025,6 @@ var Particles = function () {
         this.frequency = 0.12;
         this.camera = camera;
         this.renderer = renderer;
-        this.cameraPos = { x: -1.98, y: 7.25, z: 0 };
         this.SEPARATION = .04;
         this.AMOUNTX = 400;
         this.AMOUNTY = 1200;
@@ -55084,7 +55083,7 @@ var Particles = function () {
                 fragmentShader: ['#define GLSLIFY 1', "uniform sampler2D particle;", "uniform sampler2D gradient;", "uniform float time;", "uniform float delta;", "uniform vec2 windowResolution;", "varying vec3 pos;", THREE.ShaderChunk["common"], THREE.ShaderChunk["fog_pars_fragment"], "void main() {", "vec2 uv = vec2(pos.x - (delta * 2.), pos.z)/windowResolution;", 'uv.y -= 0.5;', "vec3 gradientColor = texture2D(gradient, vec2(uv.x, uv.y)).xyz;", "gl_FragColor = vec4( gradientColor, 1.0 );", "gl_FragColor = gl_FragColor * texture2D( particle, gl_PointCoord );", THREE.ShaderChunk["fog_fragment"], "}"].join("\n"),
                 vertexShader: ["uniform float time;", "uniform float frequency;", "attribute float size;", "attribute vec2 indexPosition;", "varying vec3 pos;", "void main() {", "pos = position;", "vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
                 // "mvPosition.y += (sin(time - (indexPosition.x * frequency)) + sin(time - (indexPosition.y * frequency))) * (frequency * 2.);",
-                "mvPosition.y += (cos(time - (indexPosition.x * frequency)) - sin(time + (indexPosition.y * frequency))) * (frequency * 2.) * -1.;", "gl_PointSize = 8. + (sin(time + (indexPosition.x * frequency)) + sin(time + (indexPosition.y * frequency))) * (2. * frequency);", "gl_Position = projectionMatrix * mvPosition;", "}"].join("\n")
+                "mvPosition.y += (cos(time - (indexPosition.x * frequency)) - sin(time + (indexPosition.y * frequency))) * (frequency * 2.) * -1.;", "gl_PointSize = 6. + (sin(time + (indexPosition.x * frequency)) + sin(time + (indexPosition.y * frequency))) * (2. * frequency);", "gl_Position = projectionMatrix * mvPosition;", "}"].join("\n")
 
             };
         }
