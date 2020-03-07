@@ -1,0 +1,19 @@
+{
+  "name": "metaballs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "canvas-sketch src/index.js --output=./dist/ --html=./dist/index.html",
+    "build": "canvas-sketch src/index.js --build --output=./dist/ --html=./dist/index.html"
+  },
+  "author": "Giulian Drimba",
+  "license": "ISC",
+  "dependencies": {
+    "canvas-sketch": "^0.7.1"
+  },
+  "devDependencies": {
+    "canvas-sketch-cli": "^1.11.7"
+  }
+}
