@@ -1,0 +1,81 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+@font-face {
+  font-family: 'GothamLight';
+  src: url('fonts/gotham/Gotham-Light.eot'); /* IE9 Compat Modes */
+  src: url('fonts/gotham/Gotham-Light.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('fonts/gotham/Gotham-Light.woff2') format('woff2'), /* Super Modern Browsers */
+       url('fonts/gotham/Gotham-Light.woff') format('woff'), /* Pretty Modern Browsers */
+       url('fonts/gotham/Gotham-Light.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('fonts/gotham/Gotham-Light.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+
+.sketches {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1000px;
+  height: 500px;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.code {
+  float: left;
+}
+
+.title {
+  font-family: "GothamLight";
+  font-size: 14px;
+  letter-spacing: 2px;
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+}

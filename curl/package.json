@@ -1,0 +1,49 @@
+{
+  "name": "draft",
+  "version": "1.0.0",
+  "description": "Boilerplate for rapid prototyping",
+  "main": "public/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "js": "node_modules/watchify/bin/cmd.js  --extension='.glsl' src/scripts/app.js -o public/app.js",
+    "css": "node_modules/catw/bin/cmd.js src/styles/*.css -o public/app.css -v",
+    "server": "node_modules/http-server/bin/http-server public",
+    "start": "npm run js & npm run css & npm run server"
+  },
+  "author": "Giulian Drimba <giuliandrimba@gmail.com>",
+  "license": "ISC",
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015"
+          ]
+        }
+      ],
+      [
+        "glslify"
+      ]
+    ]
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.6.0",
+    "babelify": "^7.3.0",
+    "browserify": "^11.1.0",
+    "catw": "^1.0.1",
+    "glslify": "^6.0.1",
+    "http-server": "^0.8.0",
+    "stringify": "^3.1.0",
+    "watchify": "^3.4.0"
+  },
+  "dependencies": {
+    "@doublepi/calc": "^1.0.1",
+    "@giuliandrimba/noise": "^1.0.0",
+    "glsl-curl-noise": "0.0.4",
+    "glsl-noise": "0.0.0",
+    "gsap": "^1.20.3",
+    "simplex-noise": "^2.3.0",
+    "three": "^0.89.0"
+  }
+}
