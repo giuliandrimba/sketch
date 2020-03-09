@@ -1,0 +1,30 @@
+{
+  "name": "draft",
+  "version": "0.0.1",
+  "description": "Boilerplate for rapid prototyping",
+  "main": "public/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "js": "node_modules/watchify/bin/cmd.js -t stringify --extension='.html' src/scripts/app.js -o public/app.js",
+    "css": "node_modules/catw/bin/cmd.js src/styles/*.css -o public/app.css -v",
+    "server": "node_modules/http-server/bin/http-server public",
+    "start": "npm run js & npm run css & npm run server"
+  },
+  "author": "Giulian Drimba <giuliandrimba@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "browserify": "^11.1.0",
+    "catw": "^1.0.1",
+    "http-server": "^0.8.0",
+    "stringify": "^3.1.0",
+    "watchify": "^3.4.0"
+  },
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "jquery": "^2.1.4",
+    "postprocessing": "^1.0.2",
+    "three": "^0.74.0",
+    "three-effectcomposer": "0.0.1",
+    "three-orbit-controls": "^72.0.0"
+  }
+}
