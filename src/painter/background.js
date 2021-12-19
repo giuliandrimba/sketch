@@ -1,13 +1,23 @@
 var vector = require("../util/vector");
-module.exports = function(drawer, width, height, time) {
+const calc = require('@doublepi/calc');
+module.exports = function(drawer, width, height, time, field, initX, initY) {
   var position = {
-    x: 0,
-    y: 0
+    x: initX + Math.random() * width,
+    y: initY + Math.random() * height
   };
   let velocity = { x: 0, y: 0 };
   const acceleration = { x: 0, y: 0 };
   let startTime;
   let canDraw = true;
+
+  const getAngle = () => {
+    return field.sort((a, b) => {
+      let distA = calc.dist(position.x, position.y, a.x, a.y);
+      let distB = calc.dist(position.x, position.y, b.x, b.y);
+      return distA - distB;
+    })[0].angle;
+  }
+
   return {
     draw() {
       if (!canDraw) {
@@ -16,28 +26,35 @@ module.exports = function(drawer, width, height, time) {
       if (!startTime) {
         startTime = Date.now();
       }
+      let angle = getAngle();
       if (Math.abs(Date.now() - startTime) > time * 3000) {
         canDraw = false;
         this.done = true;
       }
-      acceleration.x = Math.random() * 0.1;
-      acceleration.y = Math.random() * 0.1;
-      velocity.x += acceleration.x;
-      velocity.y += acceleration.y;
-      velocity = vector.mult(vector.normalize(velocity), 100);
+      velocity.x = Math.cos(angle);
+      velocity.y = Math.sin(angle) * angle;
+      velocity = vector.mult(vector.normalize(velocity), 10);
 
       position.x += velocity.x;
       position.y += velocity.y;
 
-      if (position.x < 0 || position.x > width) {
-        velocity.x *= -1;
+      if (position.x < initX ) {
+        position.x = initX + width;
       }
 
-      if (position.y < 0 || position.y > height) {
-        velocity.y *= -1;
+      if (position.x > initX + width) {
+        position.x = initX ;
       }
 
-      drawer(position.x, position.y);
+      if (position.y < initY) {
+        position.y = initY + height;
+      }
+
+      if (position.y > initY + height) {
+        position.y = initY;
+      }
+
+      drawer(position.x, position.y, angle);
     }
   };
 };

@@ -11,7 +11,11 @@
   "author": "Giulian Drimba",
   "license": "ISC",
   "dependencies": {
-    "canvas-sketch": "^0.7.1"
+    "@doublepi/calc": "^1.0.1",
+    "@giuliandrimba/noise": "^1.0.0",
+    "canvas-sketch": "^0.7.4",
+    "colorjs.io": "0.0.4",
+    "simplex-noise": "^3.0.0"
   },
   "devDependencies": {
     "canvas-sketch-cli": "^1.11.7"
