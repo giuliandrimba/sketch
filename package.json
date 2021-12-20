@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "canvas-sketch src/index.js --output=./dist/ --html=./dist/index.html",
+    "mp4": "canvas-sketch src/index.js --output=./dist/ --html=./dist/index.html --stream=gif",
     "build": "canvas-sketch src/index.js --build --output=./dist/ --html=./dist/index.html"
   },
   "author": "Giulian Drimba",

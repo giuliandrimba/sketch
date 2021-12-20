@@ -16,7 +16,7 @@ module.exports = ({ width, height, columns, rows, intensity, initX, initY }) => 
     for (let r = 0; r < rows; r+= 1) {
       // columnHeight =  initHeight * (1 + Math.random())
       y = initY + columnHeight * r;
-      noise2D = simplex.noise3D(x * intensity, y * intensity, c * 10);
+      noise2D = simplex.noise3D(x * intensity, y * intensity, c * 1);
       field.push({
         x: x + columnWidth / 2,
         y: y + columnHeight / 2, 

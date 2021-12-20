@@ -3,7 +3,8 @@ const calc = require('@doublepi/calc');
 module.exports = function(drawer, width, height, time, field, initX, initY, point) {
   var position = {
     x: initX + Math.random() * width,
-    y: initY + Math.random() * height
+    y: initY + Math.random() * height,
+    angle: 0
   };
   let velocity = { x: 0, y: 0 };
   const acceleration = { x: 0, y: 0 };
@@ -11,11 +12,13 @@ module.exports = function(drawer, width, height, time, field, initX, initY, poin
   let canDraw = true;
 
   const getAngle = () => {
-    return field.sort((a, b) => {
-      let distA = calc.dist(position.x, position.y, a.x, a.y);
-      let distB = calc.dist(position.x, position.y, b.x, b.y);
-      return distA - distB;
-    })[0].angle;
+    let ang = undefined;
+    field.filter((cell) => {
+      if(position.x >= cell.x && position.x <= cell.x + cell.width && position.y >= cell.y && position.y <= cell.y + cell.height){
+        ang= cell.angle;
+      }
+    });
+    return ang;
   }
 
   return {
@@ -26,13 +29,18 @@ module.exports = function(drawer, width, height, time, field, initX, initY, poin
       if (!startTime) {
         startTime = Date.now();
       }
-      let angle = getAngle();
+      let newAngle = getAngle();
+      if(newAngle) {
+        position.angle = newAngle;
+      } else {
+        position.angle = field[Math.floor(field.length - 1)].angle;
+      }
       if (Math.abs(Date.now() - startTime) > time * 3000) {
         canDraw = false;
         this.done = true;
       }
-      velocity.x = Math.cos(angle);
-      velocity.y = Math.sin(angle) * angle;
+      velocity.x = Math.cos(position.angle);
+      velocity.y = Math.sin(position.angle) * position.angle;
       velocity = vector.mult(vector.normalize(velocity), 10);
 
       position.x += velocity.x;
@@ -60,7 +68,7 @@ module.exports = function(drawer, width, height, time, field, initX, initY, poin
         position.y = initY;
       }
 
-      drawer(position.x, position.y, angle);
+      drawer(position.x, position.y, position.angle);
     }
   };
 };

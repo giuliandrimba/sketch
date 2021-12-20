@@ -9,24 +9,24 @@ const transform = require('./transform');
 const settings = {
   dimensions: "a4",
   pixelsPerInch: 300,
-  duration: 1,
+  duration: 10,
   units: "px",
-  fps: 24,
+  fps: 30,
   animate: true
 };
 
 
 window.onload = () => {
   sketch(s => {
-    const numberPoints = s.height * 3;
-    // const numberPoints = 500;
+    const numberPoints = s.height * 2;
+    // const numberPoints = 1000;
     const points = [];
     const field = flowfield({
       width: s.width * 0.8,
       height: s.height - s.width * 0.2,
-      columns: Math.round(Math.random() * 10),
-      rows: Math.round(Math.random() * 10),
-      intensity: 21 * Math.random(),
+      columns: 5 + Math.round(Math.random() * 10),
+      rows: 5 + Math.round(Math.random() * 10),
+      intensity: 1,
       initX: s.width * 0.1,
       initY: s.width * 0.1,
     });
@@ -39,7 +39,7 @@ window.onload = () => {
     for(let i = 0; i < numberPoints; i += 1) {
 
       let brush = circleBrush(s.context, {
-        strokeStyle: "#e04141",
+        strokeStyle: "#755f55",
         lineWidth: Math.random() * 50
       });
 
@@ -64,8 +64,8 @@ window.onload = () => {
     // s.context.arc(point.x, point.y, point.radius, 0, 2 * Math.PI);
     // s.context.fill();
     // flow.map((f) => {
-    //   s.context.strokeStyle = 'black';
-    //   s.context.lineWidth = 10;
+    //   s.context.strokeStyle = '#4a60db';
+    //   s.context.lineWidth = Math.random() * 50;
     //   s.context.rect(f.x, f.y, f.width, f.height);
     //   s.context.stroke();
     // })
