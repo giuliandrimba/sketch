@@ -21,8 +21,8 @@ module.exports = (_ctx, opts) => {
       } else if (!x && !y) {
         this.lastPoint = undefined;
       }
-      ctx.strokeStyle = color;
-      ctx.lineWidth = color;
+      ctx.fillStyle = config.strokeStyle;
+      ctx.lineWidth = Math.random() * config.lineWidth;
       this.drawCircle(x, y, angle);
       this.lastPoint = { x, y };
     },

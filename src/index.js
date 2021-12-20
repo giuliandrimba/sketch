@@ -4,6 +4,7 @@ const circleBrush = require("./brush/circle");
 const backgroundPainter = require("./painter/background");
 const mouse = require("./painter/mouse");
 const flowfield = require('./flowfield');
+const transform = require('./transform');
 
 const settings = {
   dimensions: "a4",
@@ -25,15 +26,20 @@ window.onload = () => {
       height: s.height - s.width * 0.2,
       columns: Math.round(Math.random() * 10),
       rows: Math.round(Math.random() * 10),
-      intensity: 21,
+      intensity: 21 * Math.random(),
       initX: s.width * 0.1,
       initY: s.width * 0.1,
     });
 
+    const getField = () => {
+      return transform.distort(field, s);
+    }
+    let flow = getField()
+    const point = transform.point();
     for(let i = 0; i < numberPoints; i += 1) {
 
       let brush = circleBrush(s.context, {
-        strokeStyle: "#000000",
+        strokeStyle: "#e04141",
         lineWidth: Math.random() * 50
       });
 
@@ -42,9 +48,10 @@ window.onload = () => {
         s.width * 0.8,
         s.height - s.width * 0.2,
         10 + Math.random() * 30,
-        field,
+        flow,
         s.width * 0.1,
         s.width * 0.1,
+        point
       ))
     }
     var grd = s.context.createLinearGradient(0, 0, s.width, 0);
@@ -53,9 +60,20 @@ window.onload = () => {
     s.context.fillStyle = 'white';
     s.context.fillRect(0, 0, s.width, s.height);
 
+    // s.context.fillStyle = 'red';
+    // s.context.arc(point.x, point.y, point.radius, 0, 2 * Math.PI);
+    // s.context.fill();
+    // flow.map((f) => {
+    //   s.context.strokeStyle = 'black';
+    //   s.context.lineWidth = 10;
+    //   s.context.rect(f.x, f.y, f.width, f.height);
+    //   s.context.stroke();
+    // })
+
     return {
       resize(params) {},
       render(params) {
+
         
         points.map((p) => {
           p.draw()

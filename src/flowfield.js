@@ -18,11 +18,13 @@ module.exports = ({ width, height, columns, rows, intensity, initX, initY }) => 
       y = initY + columnHeight * r;
       noise2D = simplex.noise3D(x * intensity, y * intensity, c * 10);
       field.push({
-        x,
-        y, 
-        angle: noise2D
+        x: x + columnWidth / 2,
+        y: y + columnHeight / 2, 
+        angle: noise2D,
+        width: columnWidth,
+        height: columnHeight,
       })
     }
   }
-  return field;
+  return field; 
 }
