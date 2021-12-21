@@ -24,11 +24,11 @@ exports.distort = (f, sketch) => {
     let dist = calc.dist(distortionCircle.x, distortionCircle.y, cell.x, cell.y);
 
     if (dist < distortionCircle.radius * 2) {
-      cell.x = distortionCircle.x + Math.sin(angle) * distortionCircle.radius + dist * Math.random();
-      cell.y = distortionCircle.y + Math.cos(angle) * distortionCircle.radius + dist * 0.1 ;
+      cell.x = distortionCircle.x + Math.sin(angle) + dist;
+      cell.y = distortionCircle.y + Math.cos(angle) + dist ;
     } else {
       // cell.x = distortionCircle.x + Math.sin(angle) * distortionCircle.radius + dist * 0.01;
-      cell.y = distortionCircle.y + Math.cos(angle) * distortionCircle.radius + dist * Math.random() ;
+      cell.y = distortionCircle.y + Math.cos(angle) * dist * Math.random() ;
     }
     return cell;
   })

@@ -33,7 +33,7 @@ module.exports = function(drawer, width, height, time, field, initX, initY, poin
       if(newAngle) {
         position.angle = newAngle;
       } else {
-        position.angle = field[Math.floor(field.length - 1)].angle;
+        // position.angle = field[Math.floor(field.length - 1)].angle;
       }
       if (Math.abs(Date.now() - startTime) > time * 3000) {
         canDraw = false;

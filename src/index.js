@@ -18,21 +18,22 @@ const settings = {
 
 window.onload = () => {
   sketch(s => {
-    const numberPoints = s.height * 2;
-    // const numberPoints = 500;
+    // const numberPoints = s.height * 2;
+    const numberPoints = 1000;
     const points = [];
     const field = flowfield({
       width: s.width * 0.8,
       height: s.height - s.width * 0.2,
-      columns: 5 + Math.round(Math.random() * 10),
-      rows: 5 + Math.round(Math.random() * 10),
-      intensity: 1000,
+      columns: 1 + Math.round(Math.random() * 2),
+      rows: 1 + Math.round(Math.random() * 2),
+      intensity: 1,
       initX: s.width * 0.1,
       initY: s.width * 0.1,
     });
 
     const getField = () => {
-      return transform.distort(field, s);
+      // return transform.distort(field, s);
+      return field;
     }
     let flow = getField()
     const point = transform.point();
@@ -60,9 +61,9 @@ window.onload = () => {
     s.context.fillStyle = grd;
     s.context.fillRect(0, 0, s.width, s.height);
 
-    s.context.fillStyle = '#273f9e';
-    s.context.arc(point.x, point.y - point.radius * 2.2, point.radius, 0, 2 * Math.PI);
-    s.context.fill();
+    // s.context.fillStyle = '#273f9e';
+    // s.context.arc(point.x, point.y - point.radius * 2.2, point.radius, 0, 2 * Math.PI);
+    // s.context.fill();
     // flow.map((f) => {
     //   s.context.strokeStyle = '#000';
     //   s.context.lineWidth = 10;
