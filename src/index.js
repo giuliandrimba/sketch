@@ -61,7 +61,7 @@ window.onload = () => {
     s.context.fillRect(0, 0, s.width, s.height);
 
     s.context.fillStyle = '#273f9e';
-    s.context.arc(point.x, point.y - point.radius * 2, point.radius, 0, 2 * Math.PI);
+    s.context.arc(point.x, point.y - point.radius * 2.2, point.radius, 0, 2 * Math.PI);
     s.context.fill();
     // flow.map((f) => {
     //   s.context.strokeStyle = '#000';

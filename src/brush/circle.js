@@ -22,7 +22,7 @@ module.exports = (_ctx, opts) => {
         this.lastPoint = undefined;
       }
       ctx.fillStyle = config.strokeStyle;
-      ctx.lineWidth = Math.random() * config.lineWidth;
+      ctx.lineWidth = config.lineWidth * Math.abs(angle);
       this.drawCircle(x, y, angle);
       this.lastPoint = { x, y };
     },
