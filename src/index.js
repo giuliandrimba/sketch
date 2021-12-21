@@ -18,8 +18,8 @@ const settings = {
 
 window.onload = () => {
   sketch(s => {
-    // const numberPoints = s.height * 2;
-    const numberPoints = 500;
+    const numberPoints = s.height * 2;
+    // const numberPoints = 500;
     const points = [];
     const field = flowfield({
       width: s.width * 0.8,
