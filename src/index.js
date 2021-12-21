@@ -18,15 +18,15 @@ const settings = {
 
 window.onload = () => {
   sketch(s => {
-    const numberPoints = s.height * 2;
-    // const numberPoints = 1000;
+    // const numberPoints = s.height * 2;
+    const numberPoints = 500;
     const points = [];
     const field = flowfield({
       width: s.width * 0.8,
       height: s.height - s.width * 0.2,
       columns: 5 + Math.round(Math.random() * 10),
       rows: 5 + Math.round(Math.random() * 10),
-      intensity: 1,
+      intensity: 1000,
       initX: s.width * 0.1,
       initY: s.width * 0.1,
     });
@@ -39,7 +39,7 @@ window.onload = () => {
     for(let i = 0; i < numberPoints; i += 1) {
 
       let brush = circleBrush(s.context, {
-        strokeStyle: "#755f55",
+        strokeStyle: "#000000",
         lineWidth: Math.random() * 50
       });
 
@@ -54,18 +54,18 @@ window.onload = () => {
         point
       ))
     }
-    var grd = s.context.createLinearGradient(0, 0, s.width, 0);
-    grd.addColorStop(0, "#3F2A8C");
-    grd.addColorStop(1, "#22164D");
-    s.context.fillStyle = 'white';
+    var grd = s.context.createLinearGradient(0, 0, s.width / 2 , s.height / 2);
+    grd.addColorStop(0, "#e5e520");
+    grd.addColorStop(1, "#41993d");
+    s.context.fillStyle = grd;
     s.context.fillRect(0, 0, s.width, s.height);
 
-    // s.context.fillStyle = 'red';
-    // s.context.arc(point.x, point.y, point.radius, 0, 2 * Math.PI);
-    // s.context.fill();
+    s.context.fillStyle = '#273f9e';
+    s.context.arc(point.x, point.y - point.radius * 2, point.radius, 0, 2 * Math.PI);
+    s.context.fill();
     // flow.map((f) => {
-    //   s.context.strokeStyle = '#4a60db';
-    //   s.context.lineWidth = Math.random() * 50;
+    //   s.context.strokeStyle = '#000';
+    //   s.context.lineWidth = 10;
     //   s.context.rect(f.x, f.y, f.width, f.height);
     //   s.context.stroke();
     // })
