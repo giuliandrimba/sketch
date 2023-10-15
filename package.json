@@ -14,6 +14,7 @@
     "@doublepi/calc": "^1.0.1",
     "@giuliandrimba/noise": "^1.0.0",
     "canvas-sketch": "^0.7.4",
+    "canvas-sketch-util": "^1.10.0",
     "colorjs.io": "0.0.4",
     "simplex-noise": "^3.0.0"
   },
