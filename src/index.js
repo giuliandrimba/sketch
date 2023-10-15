@@ -19,8 +19,8 @@ window.onload = () => {
   sketch((s) => {
     ctx = s.context;
 
-    let _cellWidth = s.width / 16;
-    let _cellHeight = s.width / 16;
+    let _cellWidth = s.width / 8;
+    let _cellHeight = s.width / 8;
     let _x = s.width / 2 - (s.width / 16 * 4);
     let _y = s.height / 2 - (s.height / 16 * 4);
 
@@ -28,9 +28,9 @@ window.onload = () => {
       cellWidth: _cellWidth,
       cellHeight: _cellHeight,
       x: _x,
-      y: _y,
-      columns: 9,
-      rows: 9
+      y: _y + 3,
+      columns: 5,
+      rows: 5
     }
 
     let grid = new Grid(gridSettings);

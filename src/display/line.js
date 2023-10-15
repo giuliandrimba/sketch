@@ -29,13 +29,15 @@ export default (ctx, grid) => {
       const p = createPath();
       p.strokeStyle = 'black'
       p.lineWidth = 5 
-      p.arc(cell.x, cell.y, cell.width / 2, 0, Math.PI * 2)
-      // p.arc(cell.connect.x + cell.width / 4, cell.connect.y + cell.width / 4, cell.width / 2, 0, Math.PI * 2)
+      // if (cell.connect) {
+        // p.arc(cell.connect.x, cell.connect.y, cell.width / 2, 0, Math.PI * 2)
+      // }
+      p.arc(cell.connect.x, cell.connect.y, cell.width, 0, Math.PI * 2)
       // p.arc(cell.connect.x, cell.connect.y, cell.connect.width / 4)
       // p.beginPath();
-      p.moveTo(cell.x , cell.y)
+      // p.moveTo(cell.x , cell.y)
 
-      let curveLevel = .3;
+      let curveLevel = .5;
 
       let bezier = {
         x1:  cell.connect.x,
@@ -43,8 +45,9 @@ export default (ctx, grid) => {
         x2:  cell.x + rand(-1, 1) * cell.width * curveLevel,
         y2:  cell.y + rand(-1, 1) * cell.height * curveLevel,
       }
-      p.bezierCurveTo(cell.connect.x, cell.connect.y, bezier.x1, bezier.y1, bezier.x2, bezier.y2);
-      // p.lineTo(cell.connect.x, cell.connect.y)
+      // p.bezierCurveTo(cell.connect.x, cell.connect.y, bezier.x1, bezier.y1, bezier.x2, bezier.y2);
+      p.moveTo(cell.x, cell.y)
+      p.lineTo(cell.connect.x, cell.connect.y)
       // p.stroke();
       paths.push(p);
     }
