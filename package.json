@@ -1,22 +1,18 @@
 {
-  "name": "metaballs",
+  "name": "sketch",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "canvas-sketch src/index.js --output=./dist/ --html=./dist/index.html",
-    "build": "canvas-sketch src/index.js --build --output=./dist/ --html=./dist/index.html"
+    "start": "fragment run ./src/index.js --outDir=./dist/",
+    "build": "canvas-sketch src/index.js --build --output=./dist/ --html=./src/index.html"
   },
   "author": "Giulian Drimba",
   "license": "ISC",
   "dependencies": {
-    "@doublepi/calc": "^1.0.1",
-    "@giuliandrimba/noise": "^1.0.0",
-    "canvas-sketch": "^0.7.4",
-    "canvas-sketch-util": "^1.10.0",
-    "colorjs.io": "0.0.4",
-    "simplex-noise": "^3.0.0"
+    "events": "^3.3.0",
+    "fragment-tools": "^0.1.17"
   },
   "devDependencies": {
     "canvas-sketch-cli": "^1.11.7"
