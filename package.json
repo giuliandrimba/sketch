@@ -5,14 +5,14 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "fragment run ./src/index.js --outDir=./dist/",
+    "start": "fragment run ./src/index.js --outDir=./dist/ --development",
     "build": "canvas-sketch src/index.js --build --output=./dist/ --html=./src/index.html"
   },
   "author": "Giulian Drimba",
   "license": "ISC",
   "dependencies": {
     "events": "^3.3.0",
-    "fragment-tools": "^0.1.17"
+    "svgcanvas": "^2.5.0"
   },
   "devDependencies": {
     "canvas-sketch-cli": "^1.11.7"
