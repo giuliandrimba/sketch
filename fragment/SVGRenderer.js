@@ -4,6 +4,7 @@ function downloadSVG(svg, width, height) {
   let exported = svg.cloneNode(true);
   exported.setAttribute('width', width)
   exported.setAttribute('height', height)
+  exported.setAttribute('viewBox', `0 0 ${width} ${height}`)
   var data = new XMLSerializer().serializeToString(exported);
   var blob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
   const url = URL.createObjectURL(blob)
