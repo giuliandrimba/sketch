@@ -11,21 +11,20 @@ export default class App {
   center = undefined;
   fps = 15;
   frame = 0;
-  constructor({ canvas, context, width, height, pixelRatio, ...params }) {
+  constructor({ canvas, context, width, height, pixelRatio, clear, ...params }) {
     this.canvas = canvas;
+    this.clear = clear;
+    console.log('clear',clear)
     this.ctx = context;
-    this.width = width;
-    this.height = height;
     this.pixelRatio = pixelRatio;
     this.props = params.props;
-    this.scale = this.width / this.canvas.parentNode.offsetWidth;
     this.Y = 0;
-    this.resize();
+    this.resize(width, height);
     this.draw();
   }
 
   draw() {
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
+    this.ctx.__clearCanvas()
     this.ctx.fillStyle = '#fff'
     this.ctx.fillRect(0,0, this.width, this.height)
     
@@ -43,7 +42,9 @@ export default class App {
     }
   }
 
-  resize() {
+  resize(width, height) {
+    this.width = width;
+    this.height = height;
     this.scale = this.width / this.canvas.parentNode.offsetWidth;
     this.center = {
       x: this.width / 2,

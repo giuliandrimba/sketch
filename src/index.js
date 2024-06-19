@@ -4,6 +4,11 @@ import App from "./app/App";
 export let props = {
   radius: {
     value: 100,
+    params: {
+      min: 1,
+      max: 100,
+      step: 0.1
+  }
   },
 };
 
@@ -21,9 +26,10 @@ export let init = ({
   width,
   height,
   pixelRatio,
+  clear,
   ...params
 }) => {
-  app = new App({ canvas, context, width, height, pixelRatio, ...params });
+  app = new App({ canvas, context, width, height, pixelRatio, clear, ...params });
 };
 
 export let update = ({
@@ -48,8 +54,13 @@ export let resize = ({
   height,
   pixelRatio,
   ...params
-}) => {};
+}) => {
+  app.resize(width, height);
+  app.update();
+};
 
 export let exportDir = "../dist";
 
+export let rendering = '2d'
 export let renderer = () => import("../fragment/SVGRenderer");
+

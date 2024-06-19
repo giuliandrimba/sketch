@@ -9,3 +9,12 @@
   top: 0;
   left: 0;
 }
+
+.svg-export-info {
+  position: absolute;
+  bottom: 0;
+  color: white;
+  padding-left: 15px;
+  font-size: 12px;
+  letter-spacing: 0.3px;;
+}
