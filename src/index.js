@@ -20,31 +20,12 @@ export let load = ({ publicPath }) => {
   });
 };
 
-export let init = ({
-  canvas,
-  context,
-  width,
-  height,
-  pixelRatio,
-  clear,
-  ...params
-}) => {
-  app = new App({ canvas, context, width, height, pixelRatio, clear, ...params });
+export let init = (params) => {
+  app = new App(params);
 };
 
-export let update = ({
-  context,
-  width,
-  height,
-  pixelRatio,
-  time,
-  deltaTime,
-  frame,
-  playhead,
-  playcount,
-  ...params
-}) => {
-  app.update();
+export let update = (params) => {
+  app.update(params);
 };
 
 export let resize = ({
@@ -60,7 +41,6 @@ export let resize = ({
 };
 
 export let exportDir = "../dist";
-
 export let rendering = '2d'
 export let renderer = () => import("../fragment/SVGRenderer");
 

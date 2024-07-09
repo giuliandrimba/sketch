@@ -11,22 +11,20 @@ export default class App {
   center = undefined;
   fps = 15;
   frame = 0;
-  constructor({ canvas, context, width, height, pixelRatio, clear, ...params }) {
+  constructor({ canvas, context, width, height, pixelRatio, ...params }) {
     this.canvas = canvas;
-    this.clear = clear;
-    console.log('clear',clear)
     this.ctx = context;
     this.pixelRatio = pixelRatio;
     this.props = params.props;
     this.Y = 0;
     this.resize(width, height);
+    this.ctx.fillStyle = '#fff'
+    this.ctx.fillRect(0,0, this.width, this.height)
     this.draw();
   }
 
   draw() {
     this.ctx.__clearCanvas()
-    this.ctx.fillStyle = '#fff'
-    this.ctx.fillRect(0,0, this.width, this.height)
     
     this.ctx.strokeStyle = '#000'
     this.ctx.lineWidth = 1 * this.scale
@@ -37,8 +35,9 @@ export default class App {
 
   update() {
     this.frame ++;
+    this.Y += 10;
+    this.draw()
     if (this.frame % this.fps === 0) {
-      this.draw()
     }
   }
 

@@ -24,11 +24,13 @@ export let onMountPreview = ({ canvas }) => {
   let svg = svgcanvas.svg;
   svg.setAttribute('viewBox', `0 0 ${canvas.width} ${canvas.height}`)
   canvas.parentNode.appendChild(svgcanvas.getElement())
+
   window.addEventListener('keydown', (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 'e') {
       download(svgcanvas.svg, canvas.width, canvas.height)
     }
   })
+  
   let svgContext =  svgcanvas.getContext('2d');
 
 	return {
