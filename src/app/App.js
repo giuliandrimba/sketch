@@ -35,7 +35,6 @@ export default class App {
 
   update() {
     this.frame ++;
-    this.Y += 10;
     this.draw()
     if (this.frame % this.fps === 0) {
     }
