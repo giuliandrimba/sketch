@@ -10,6 +10,14 @@
   left: 0;
 }
 
+html, body {
+  background-color: white !important;
+}
+
+.canvas-container {
+  background-color: white !important;
+}
+
 .svg-export-info {
   position: absolute;
   bottom: 0;

@@ -1,12 +1,12 @@
-import css from "./index.css";
+import "./index.css";
 import App from "./app/App";
 
 export let props = {
   radius: {
-    value: 100,
+    value: 200,
     params: {
       min: 1,
-      max: 100,
+      max: 200,
       step: 0.1
   }
   },

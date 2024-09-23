@@ -16,6 +16,8 @@ sidebar.appendChild(saveInstructions)
 
 export let onResizePreview = ({ index, canvas, container, width, height }) => {
   let svg = svgcanvas.svg;
+  svgcanvas._width = width;
+  svgcanvas._height = height;
   svg.setAttribute('viewBox', `0 0 ${width} ${height}`)
 }
 
@@ -27,7 +29,7 @@ export let onMountPreview = ({ canvas }) => {
 
   window.addEventListener('keydown', (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 'e') {
-      download(svgcanvas.svg, canvas.width, canvas.height)
+      download(svgcanvas.svg,  svgcanvas._width, svgcanvas._height)
     }
   })
   

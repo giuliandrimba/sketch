@@ -11,6 +11,8 @@ export default class App {
   center = undefined;
   fps = 15;
   frame = 0;
+  TOTAL_CIRCLES = 30
+
   constructor({ canvas, context, width, height, pixelRatio, ...params }) {
     this.canvas = canvas;
     this.ctx = context;
@@ -28,8 +30,16 @@ export default class App {
     
     this.ctx.strokeStyle = '#000'
     this.ctx.lineWidth = 1 * this.scale
+
+    for (let i = 0; i < this.TOTAL_CIRCLES; i++) {
+      this.drawCircle(this.center.x, this.center.y, this.props.radius.value * this.scale * (1 - i/this.TOTAL_CIRCLES), 0, 2 * Math.PI)
+    }
+
+  }
+
+  drawCircle(x, y, radius) {
     this.ctx.beginPath();
-    this.ctx.arc(this.center.x, this.center.y + this.Y, this.props.radius.value * this.scale, 0, 2 * Math.PI);
+    this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
     this.ctx.stroke();
   }
 

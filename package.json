@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "fragment run ./src/index.js --outDir=./dist/ --development",
-    "build": "canvas-sketch src/index.js --build --output=./dist/ --html=./src/index.html"
+    "build": "fragment build src/index.js --outDir=./dist/"
   },
   "author": "Giulian Drimba",
   "license": "ISC",
@@ -15,6 +15,6 @@
     "svgcanvas": "^2.5.0"
   },
   "devDependencies": {
-    "canvas-sketch-cli": "^1.11.7"
+    "fragment-tools": "^0.1.20"
   }
 }
